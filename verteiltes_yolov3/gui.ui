@@ -45,7 +45,7 @@
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <widget class="QGraphicsView" name="graphicsView"/>
+            <widget class="QGraphicsView" name="player"/>
             <widget class="QListWidget" name="listWidget">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -174,12 +174,13 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuDateil">
+   <widget class="QMenu" name="menuDatei">
     <property name="title">
-     <string>Dateil</string>
+     <string>Datei</string>
     </property>
     <addaction name="actionload_image"/>
     <addaction name="separator"/>
+    <addaction name="actionload_video"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -187,7 +188,7 @@
     </property>
     <addaction name="separator"/>
    </widget>
-   <addaction name="menuDateil"/>
+   <addaction name="menuDatei"/>
    <addaction name="menuView"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -196,8 +197,19 @@
    </property>
   </widget>
   <action name="actionload_image">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>load image</string>
+   </property>
+  </action>
+  <action name="actionload_video">
+   <property name="text">
+    <string>load video</string>
    </property>
   </action>
  </widget>
