@@ -11,6 +11,8 @@
     <OutputPath>.</OutputPath>
     <Name>verteiltes_yolov3</Name>
     <RootNamespace>verteiltes_yolov3</RootNamespace>
+    <InterpreterId>CondaEnv|CondaEnv|python2.7</InterpreterId>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,12 +23,20 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="verteiltes_yolov3.py" />
+    <Compile Include="verteiltes_yolov3.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="gui.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="gui.ui" />
     <Content Include="ReadMe.md">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="requirements.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="CondaEnv|CondaEnv|python2.7" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
