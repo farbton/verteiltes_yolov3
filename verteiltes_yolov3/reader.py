@@ -1,5 +1,6 @@
 #import numpy
 import os
+import cv2
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore 
@@ -9,17 +10,22 @@ class Reader(object):
         self.mainWindow = mainWindow
         #pass
 
-    def read_image(self):
-        print("read image ...")
+    def load_image(self):
+        print("load image ...")
+        self.mainWindow.statusBar().showMessage("load image")
         height = self.mainWindow.player.geometry().height()
         width = self.mainWindow.player.geometry().width()
-        #print(geo)
-
         image_name = "images/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros0.jpg"
-        pix_map = QPixmap(image_name)
-        #pix_map.scaled(geo)
-        pix_map = pix_map.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
-        pix_map_item = QtWidgets.QGraphicsPixmapItem(pix_map)
+        pixMap = QPixmap(image_name)
+        pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
         scene = QtWidgets.QGraphicsScene()
-        scene.addItem(pix_map_item)
+        scene.addPixmap(pixMap) # return pixmapitem
         self.mainWindow.player.setScene(scene)
+        self.mainWindow.statusBar().clearMessage()
+        
+
+    def load_video(self):
+        print("load video ...")
+        self.mainWindow.statusBar().showMessage("load video")
+
+        #QtWidgets.QApplication.event()
