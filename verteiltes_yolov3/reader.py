@@ -12,6 +12,7 @@ class Reader(object):
 
     def getImage(self, height, width):
         print("load image ...")
+        #net = cv2.dnn.readNetFromDarknet()
         image_name = "images/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros0.jpg"
         pixMap = QPixmap(image_name)
         pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)

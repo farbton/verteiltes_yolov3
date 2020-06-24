@@ -2,6 +2,7 @@ import sys
 from PyQt5 import QtWidgets, uic
 
 from reader import Reader
+import yolo
 
 #Klasse die in das MainWindow schreiben darf
 class Window(QtWidgets.QMainWindow):
@@ -11,6 +12,7 @@ class Window(QtWidgets.QMainWindow):
         uic.loadUi("gui.ui", self)
         self.setWindowTitle("Viewer for Yolov3")
         self.reader = Reader(self)
+        self.yolo =yolo.Yolo()
 
     def start(self):        
         self.refresh_button.clicked.connect(self.label_write)
