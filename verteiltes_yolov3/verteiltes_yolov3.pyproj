@@ -29,7 +29,10 @@
     <Compile Include="verteiltes_yolov3.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="gui.py" />
+    <Compile Include="mainwindow.py" />
+    <Compile Include="yolo.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="gui.ui" />
