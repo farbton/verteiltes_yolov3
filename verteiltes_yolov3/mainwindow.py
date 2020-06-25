@@ -2,7 +2,7 @@ import sys
 from PyQt5 import QtWidgets, uic
 
 from reader import Reader
-import yolo
+from yolo import Yolo
 
 #Klasse die in das MainWindow schreiben darf
 class Window(QtWidgets.QMainWindow):
@@ -12,7 +12,7 @@ class Window(QtWidgets.QMainWindow):
         uic.loadUi("gui.ui", self)
         self.setWindowTitle("Viewer for Yolov3")
         self.reader = Reader(self)
-        self.yolo =yolo.Yolo()
+        self.yolo = Yolo()
 
     def start(self):        
         self.refresh_button.clicked.connect(self.label_write)
@@ -27,7 +27,7 @@ class Window(QtWidgets.QMainWindow):
         self.statusBar().showMessage("load image ...")
         height = self.player.geometry().height()
         width = self.player.geometry().width()
-        imageScene = self.reader.getImage(height,width)
+        imageScene = self.reader.getImage()
         self.player.setScene(imageScene)
         self.statusBar().clearMessage()
 
@@ -36,7 +36,9 @@ class Window(QtWidgets.QMainWindow):
         videoScene = self.reader.getVideo()
         self.statusBar().clearMessage()
 
-
+    def resizeEvent(self, event):
+        print("Event")
+        self.loadImage()
 
     #def refresh_graphicView_image(self, pix_map_item):
     #    scene = QtWidgets.QGraphicsScene()

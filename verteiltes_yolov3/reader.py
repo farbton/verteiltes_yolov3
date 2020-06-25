@@ -10,17 +10,30 @@ class Reader(object):
         self.mainWindow = mainWindow
         #pass
 
-    def getImage(self, height, width):
-        print("load image ...")
+    def getImage(self):
+        print("getImage(self, height, width)")
         #net = cv2.dnn.readNetFromDarknet()
+        self.setHeightWidth()
+        self.loadPixmap()
+        # Abgriff der pixmap zur Verarbeitung im CNN
+        self.resizePixmap()
+        self.pixmapSetScene()
+        return self.scene
+    
+    def setHeightWidth(self):
+        self.height = self.mainWindow.player.geometry().height()
+        self.width = self.mainWindow.player.geometry().width()
+        
+    def loadPixmap(self):
         image_name = "images/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros0.jpg"
-        pixMap = QPixmap(image_name)
-        pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
-        scene = QtWidgets.QGraphicsScene()
-        scene.addPixmap(pixMap) # return pixmapitem
-        return scene
-        
-        
+        self.pixMap = QPixmap(image_name)
+
+    def resizePixmap(self):
+        self.pixMap = self.pixMap.scaled(QtCore.QSize(self.height, self.width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
+    
+    def pixmapSetScene(self):
+        self.scene = QtWidgets.QGraphicsScene()
+        self.scene.addPixmap(self.pixMap) # return pixmapitem
 
     def getVideo(self):
         print("load video ...")       
