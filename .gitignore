@@ -70,6 +70,8 @@ artifacts/
 *.svclog
 *.scc
 *.avi
+*.weights
+*.cfg
 
 # Chutzpah Test files
 _Chutzpah*
