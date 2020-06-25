@@ -8,11 +8,12 @@ from PyQt5 import QtCore
 class Reader(object):
     def __init__(self, mainWindow):
         self.mainWindow = mainWindow
+        self.cfgFileName = "yolo/yolov3.cfg" 
+        self.weightsFile = "yolo/yolov3.weights"
         #pass
 
     def getImage(self):
         print("getImage(self, height, width)")
-        #net = cv2.dnn.readNetFromDarknet()
         self.setHeightWidth()
         self.loadPixmap()
         # Abgriff der pixmap zur Verarbeitung im CNN
@@ -20,6 +21,22 @@ class Reader(object):
         self.pixmapSetScene()
         return self.scene
     
+    def loadYolofromDarknet(self):
+        self.getClassesNames()
+        self.printClassesNames()
+        self.net = cv2.dnn.readNetFromDarknet(self.cfgFileName,self.weightsFile)
+        self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+        self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
+
+    def printClassesNames(self):
+        self.mainWindow.listWidget.addItems(self.classes)
+
+    def getClassesNames(self):
+        classesFile = "yolo/weevil.names";
+        self.classes = None
+        with open(classesFile, 'rt') as f:
+            self.classes = f.read().rstrip('\n').split('\n')
+
     def setHeightWidth(self):
         self.height = self.mainWindow.player.geometry().height()
         self.width = self.mainWindow.player.geometry().width()

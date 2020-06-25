@@ -18,7 +18,13 @@ class Window(QtWidgets.QMainWindow):
         self.refresh_button.clicked.connect(self.label_write)
         self.actionload_image.triggered.connect(self.loadImage)
         self.actionload_video.triggered.connect(self.loadVideo)
+        self.pushButtonStartDetection.clicked.connect(self.startDetection)
 
+    def startDetection(self):
+        print("startDetection")
+        self.statusBar().showMessage("load .cfg and .weights ...")
+        self.reader.loadYolofromDarknet()
+        self.statusBar().clearMessage()
 
     def label_write(self):
         self.label.setText("hallo")

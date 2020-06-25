@@ -11,7 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>verteiltes_yolov3</Name>
     <RootNamespace>verteiltes_yolov3</RootNamespace>
-    <InterpreterId>CondaEnv|CondaEnv|python2.7</InterpreterId>
+    <InterpreterId>CondaEnv|CondaEnv|py3.6</InterpreterId>
     <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -42,7 +42,7 @@
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="CondaEnv|CondaEnv|python2.7" />
+    <InterpreterReference Include="CondaEnv|CondaEnv|py3.6" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
