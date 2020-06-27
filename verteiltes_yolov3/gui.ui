@@ -155,18 +155,19 @@
           </item>
          </layout>
         </widget>
-        <widget class="QTextBrowser" name="textBrowser">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>200</height>
-          </size>
+        <widget class="QLabel" name="console">
+         <property name="autoFillBackground">
+          <bool>false</bool>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>500</height>
-          </size>
+         <property name="text">
+          <string>ready ... 
+</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::AutoText</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
        </widget>

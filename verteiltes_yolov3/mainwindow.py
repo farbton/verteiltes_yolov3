@@ -22,9 +22,10 @@ class Window(QtWidgets.QMainWindow):
 
     def startDetection(self):
         print("startDetection")
-        self.statusBar().showMessage("load .cfg and .weights ...")
+        self.statusBar().showMessage("load .cfg and .weights ... ")
         self.reader.loadYolofromDarknet()
         self.statusBar().clearMessage()
+        self.console.setText(self.console.text() + "test \n")
 
     def label_write(self):
         self.label.setText("hallo")
@@ -33,9 +34,9 @@ class Window(QtWidgets.QMainWindow):
         self.statusBar().showMessage("load image ...")
         height = self.player.geometry().height()
         width = self.player.geometry().width()
-        imageScene = self.reader.getImage()
-        self.player.setScene(imageScene)
-        self.statusBar().clearMessage()
+        #imageScene = self.reader.getImage()
+        #self.player.setScene(imageScene)
+        #self.statusBar().clearMessage()
 
     def loadVideo(self):
         self.statusBar().showMessage("play video ...")
@@ -44,7 +45,7 @@ class Window(QtWidgets.QMainWindow):
 
     def resizeEvent(self, event):
         print("Event")
-        self.loadImage()
+        #self.loadImage()
 
     #def refresh_graphicView_image(self, pix_map_item):
     #    scene = QtWidgets.QGraphicsScene()

@@ -39,7 +39,6 @@
     <Content Include="ReadMe.md">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="CondaEnv|CondaEnv|py3.6" />
