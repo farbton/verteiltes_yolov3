@@ -22,16 +22,21 @@ class Window(QtWidgets.QMainWindow):
 
     def startDetection(self):
         print("startDetection")
-        self.statusBar().showMessage("load .cfg and .weights ... ")
+        self.statusBar().showMessage("detection ... ")
+        string = self.console.text() + "start detection ... \n"
+        self.console.setText(string)
+        self.console.repaint()
+        self.repaint()
         self.reader.loadYolofromDarknet()
         self.statusBar().clearMessage()
-        self.console.setText(self.console.text() + "test \n")
+        self.console.setText(self.console.text() + "ready ... \n")
 
     def label_write(self):
         self.label.setText("hallo")
      
     def loadImage(self):
         self.statusBar().showMessage("load image ...")
+        self.statusBar().repaint()
         height = self.player.geometry().height()
         width = self.player.geometry().width()
         #imageScene = self.reader.getImage()
