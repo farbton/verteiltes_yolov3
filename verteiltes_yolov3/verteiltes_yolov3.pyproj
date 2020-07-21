@@ -23,7 +23,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="module1.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="reader.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="signals.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="verteiltes_yolov3.py">

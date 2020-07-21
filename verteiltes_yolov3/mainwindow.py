@@ -6,7 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage
 from PyQt5 import QtCore
 
 from reader import Reader
-from yolo import Yolo
+#from yolo import Yolo
 
 #Klasse die in das MainWindow schreiben darf
 class Window(QtWidgets.QMainWindow):
@@ -15,11 +15,13 @@ class Window(QtWidgets.QMainWindow):
         super(Window, self).__init__()       
         uic.loadUi("gui.ui", self)
         self.setWindowTitle("Viewer for Yolov3")
+        self.imageName = "images/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros0.jpg"
+        self.imageName512 = "images_512/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros840_rot90sub3.jpg"
         self.reader = Reader(self)
-        self.yolo = Yolo(self)
         self.lock = True
         self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         #self.scrollArea.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+        #QtWidgets.QApplication.processEvents()
 
     def start(self):        
         self.refresh_button.clicked.connect(self.label_write)
@@ -28,15 +30,16 @@ class Window(QtWidgets.QMainWindow):
         self.pushButtonStartDetection.clicked.connect(self.startDetection)
 
     def startDetection(self):
+        self.console.clear()
         print("startDetection")
         self.statusBar().showMessage("detection ... ")
-        self.console.setText(self.console.text() + "start detection ... " + str(self.scrollArea.verticalScrollBar().maximum()) + "\n")
+        self.console.setText(self.console.text() + "start detection ... \n")
         self.console.repaint()
-        #self.autoscroll()
+        self.image = self.reader.getFrame(self.imageName512)
         self.detectImage()
 
     def detectImage(self):
-        self.detectedImage = self.yolo.detectImage()
+        self.detectedImage = self.yolo.detectImage(self.image)
         self.convertCv2ToQImage()
         #cv2.imshow("test", self.detectedImage)
         self.setPlayerHeightWidth()
@@ -77,12 +80,12 @@ class Window(QtWidgets.QMainWindow):
         self.statusBar().showMessage("load image ...")
         self.statusBar().repaint()
         self.setPlayerHeightWidth()
-        self.qimage = self.reader.getQImage()
+        self.qimage = self.reader.getImage(self.imageName512)
         self.autoscroll()
-        self.qimageToPixmap()
-        self.resizePixmap()
-        self.pixmapSetScene()
-        self.addSceneToPlayer()
+       # self.qimageToPixmap()
+        #self.resizePixmap()
+        #self.pixmapSetScene()
+        #self.addSceneToPlayer()
         self.lock = False
         self.statusBar().clearMessage()
 
