@@ -95,57 +95,38 @@ class Reader(object):
         print("fps: " + str(cap.get(cv2.CAP_PROP_FPS)))
         print("codec: " + str(cap.get(cv2.CAP_PROP_FOURCC)))
         counter = 1
-        while(cap.isOpened() and counter <= 16):
+        while(cap.isOpened() and counter <= 3):
             #start = time.time()
             ret,frame = cap.read()
             if ret == False:
                 break
-            tile = self.getTile((counter % 16), frame)
-            yoloThread = yolo.Yolo(self.net, self.layerNames, self.mutexNet, tile)
+            yoloThread = yolo.Yolo(self.net, self.layerNames, self.mutexNet, frame, counter)
             #print("vor start: " + str(self.yoloThread.thread()))
-            yoloThread.signals.output_signal.connect(self.display)
+            yoloThread.signals.output_signal.connect(self.mainWindow.display)
+            yoloThread.signals.signal_detectionList.connect(self.mainWindow.writeList)
             self.threadPool.start(yoloThread)
             #yoloThread.start()
             print("ThreadPool: " + str(self.threadPool.activeThreadCount()) + " counter: " + str(counter) )
             counter += 1
+            
         cap.release()
     
+    #@QtCore.pyqtSlot(QImage)
+    #def display(self, frame):
+    #    print("Reader.display(): ")
+    #    height = self.mainWindow.player.geometry().height()
+    #    width = self.mainWindow.player.geometry().width()
+    #    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    #    #frameImage = QImage(frame.data, frame.shape[1], frame.shape[0],
+    #    #QImage.Format_RGB888)
+    #    pixMap = QPixmap.fromImage(frame)
+    #    pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
+    #    scene = QtWidgets.QGraphicsScene()
+    #    scene.addPixmap(pixMap) # return pixmapitem
+    #    self.mainWindow.player.setScene(scene)
+    #    #end = time.time()
+    #    #print(end-start)
+    #    #self.mainWindow.console.clear()
+    #    QtWidgets.QApplication.processEvents()
 
-    def display(self, frame):
-        print("Reader.display(): ")
-        height = self.mainWindow.player.geometry().height()
-        width = self.mainWindow.player.geometry().width()
-        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        #frameImage = QImage(frame.data, frame.shape[1], frame.shape[0],
-        #QImage.Format_RGB888)
-        pixMap = QPixmap.fromImage(frame)
-        pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
-        scene = QtWidgets.QGraphicsScene()
-        scene.addPixmap(pixMap) # return pixmapitem
-        self.mainWindow.player.setScene(scene)
-        #end = time.time()
-        #print(end-start)
-        self.mainWindow.console.clear()
-        QtWidgets.QApplication.processEvents()
-
-    def getTile(self, counter, frame):
-
-        switch = {
-            0: frame[0:512,      0:512],
-            1: frame[512:1024,   0:512],
-            2: frame[1024:1536,  0:512],
-            3: frame[1536:2048,  0:512],
-            4: frame[0:512,      512:1024],
-            5: frame[512:1024,   512:1024],
-            6: frame[1024:1536,  512:1024],
-            7: frame[1536:2048,  512:1024],
-            8: frame[0:512,      1024:1536],
-            9: frame[512:1024,  1024:1536],
-            10: frame[1024:1536, 1024:1536],
-            11: frame[1536:2048, 1024:1536],
-            12: frame[0:512,     1536:2048],
-            13: frame[512:1024,  1536:2048],
-            14: frame[1024:1536, 1536:2048],
-            15: frame[1536:2048, 1536:2048],
-            }
-        return switch.get(counter, "fail")
+    

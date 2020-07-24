@@ -1,6 +1,6 @@
 import sys
 import cv2
-import os
+import os, platform
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5 import QtCore
@@ -22,6 +22,8 @@ class Window(QtWidgets.QMainWindow):
         self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         #self.scrollArea.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         #QtWidgets.QApplication.processEvents()
+        print("Python3Version: " + str(platform.python_version()))
+        print("OpenCV-Version: " + str(cv2.__version__))
 
     def start(self):        
         self.refresh_button.clicked.connect(self.label_write)
@@ -55,7 +57,11 @@ class Window(QtWidgets.QMainWindow):
 
     def label_write(self):
         self.label.setText("hallo")
-     
+
+    def writeList(self, list):
+        self.listWidget.clear()
+        self.listWidget.addItems(list)
+    
     def setPlayerHeightWidth(self):
         self.playerHeight = self.player.geometry().height()
         self.playerWidth = self.player.geometry().width()
@@ -91,7 +97,7 @@ class Window(QtWidgets.QMainWindow):
 
     def loadVideo(self):
         self.statusBar().showMessage("play video ...")
-        videoScene = self.reader.getVideo()
+        self.reader.getVideo()
         self.statusBar().clearMessage()
 
     def autoscroll(self):
@@ -110,3 +116,21 @@ class Window(QtWidgets.QMainWindow):
             self.resizePixmap()
             self.pixmapSetScene()
             self.addSceneToPlayer()
+
+    @QtCore.pyqtSlot(QImage)
+    def display(self, frame):
+        print("Reader.display(): ")
+        height = self.player.geometry().height()
+        width = self.player.geometry().width()
+        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        #frameImage = QImage(frame.data, frame.shape[1], frame.shape[0],
+        #QImage.Format_RGB888)
+        pixMap = QPixmap.fromImage(frame)
+        pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
+        scene = QtWidgets.QGraphicsScene()
+        scene.addPixmap(pixMap) # return pixmapitem
+        self.player.setScene(scene)
+        #end = time.time()
+        #print(end-start)
+        #self.mainWindow.console.clear()
+        QtWidgets.QApplication.processEvents()
