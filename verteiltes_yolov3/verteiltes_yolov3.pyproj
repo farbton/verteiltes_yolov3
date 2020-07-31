@@ -26,7 +26,10 @@
     <Compile Include="module1.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="reader.py">
+    <Compile Include="reader_parallel.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="reader_seriell.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="signals.py">
@@ -36,7 +39,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="mainwindow.py" />
-    <Compile Include="yolo.py">
+    <Compile Include="yoloQRunnable.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>825</width>
-    <height>1051</height>
+    <width>1525</width>
+    <height>1551</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
            <widget class="QSplitter" name="splitter">
@@ -164,8 +164,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>771</width>
-            <height>143</height>
+            <width>1471</width>
+            <height>216</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -219,7 +219,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>825</width>
+     <width>1525</width>
      <height>20</height>
     </rect>
    </property>
@@ -229,7 +229,8 @@
     </property>
     <addaction name="actionload_image"/>
     <addaction name="separator"/>
-    <addaction name="actionload_video"/>
+    <addaction name="actionload_video_parallel"/>
+    <addaction name="actionload_video_seriell"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -256,9 +257,14 @@
     <string>load image</string>
    </property>
   </action>
-  <action name="actionload_video">
+  <action name="actionload_video_parallel">
    <property name="text">
-    <string>load video</string>
+    <string>load video parallel</string>
+   </property>
+  </action>
+  <action name="actionload_video_seriell">
+   <property name="text">
+    <string>load video seriell</string>
    </property>
   </action>
  </widget>

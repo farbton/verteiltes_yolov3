@@ -5,24 +5,25 @@ import time
 #import _thread
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
+from signals import WorkerSignals
 
 from PyQt5.QtGui import QImage, QPixmap
-import yolo 
+import yoloQRunnable 
 
-class Reader(object):
+class ReaderParallel(QtCore.QObject):
     def __init__(self, mainWindow):
+        QtCore.QObject.__init__(self)
         self.mainWindow = mainWindow
+        self.signals = WorkerSignals()
         self.threadPool = QtCore.QThreadPool()
         #self.threadPool.setMaxThreadCount(1)
         self.mutexNet = QtCore.QMutex()
+        self.mutexDislpay = QtCore.QMutex()
+        self.mutexList = QtCore.QMutex()
         self.cfgFileName = "yolo/yolov3.cfg" 
         self.weightsFile = "yolo/yolov3_512.weights" 
         self.classesFile = "yolo/weevil.names"
         self.prepareNet()
-        
-        #signalFrame = QtCore.pyqtSignal(np.ndarray)
-        #self.yolo = yolo.Yolo(mainWindow)
-        #self.worker = QtCore.QThread()
     
     def getClassesNames(self):        
         self.classes = None
@@ -45,8 +46,8 @@ class Reader(object):
         #self.autoscroll()
         start = time.time()
         self.net = cv2.dnn.readNetFromDarknet(self.cfgFileName,self.weightsFile)
-        self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
-        self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
+        self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_DEFAULT)
+        self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
         end = time.time()
         string = self.mainWindow.console.text() + "{:2f} s \n".format(end - start)
         self.mainWindow.console.setText(string)
@@ -95,38 +96,49 @@ class Reader(object):
         print("fps: " + str(cap.get(cv2.CAP_PROP_FPS)))
         print("codec: " + str(cap.get(cv2.CAP_PROP_FOURCC)))
         counter = 1
-        while(cap.isOpened() and counter <= 3):
+        while(cap.isOpened() and counter <= 6):
             #start = time.time()
             ret,frame = cap.read()
             if ret == False:
                 break
-            yoloThread = yolo.Yolo(self.net, self.layerNames, self.mutexNet, frame, counter)
+            yoloThread = yoloQRunnable.Yolo(self.mainWindow, self.net, self.layerNames, self.mutexNet, frame, counter)
             #print("vor start: " + str(self.yoloThread.thread()))
-            yoloThread.signals.output_signal.connect(self.mainWindow.display)
-            yoloThread.signals.signal_detectionList.connect(self.mainWindow.writeList)
+            yoloThread.signals.output_signal.connect(self.display)
+            yoloThread.signals.signal_detectionList.connect(self.writeList)
             self.threadPool.start(yoloThread)
             #yoloThread.start()
-            print("ThreadPool: " + str(self.threadPool.activeThreadCount()) + " counter: " + str(counter) )
+            #print("ThreadPool: " + str(self.threadPool.activeThreadCount()) + " counter: " + str(counter) )
             counter += 1
+            QtWidgets.QApplication.processEvents()
+            #time.sleep(0.4)
             
-        cap.release()
+        #cap.release()
     
+    def writeList(self, list):
+        self.mutexList.lock()
+        print("Mainwindow.writeList()")
+        self.mainWindow.listWidget.clear()
+        self.mainWindow.listWidget.addItems(list)
+        self.mutexList.unlock()
+
     #@QtCore.pyqtSlot(QImage)
-    #def display(self, frame):
-    #    print("Reader.display(): ")
-    #    height = self.mainWindow.player.geometry().height()
-    #    width = self.mainWindow.player.geometry().width()
-    #    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    #    #frameImage = QImage(frame.data, frame.shape[1], frame.shape[0],
-    #    #QImage.Format_RGB888)
-    #    pixMap = QPixmap.fromImage(frame)
-    #    pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
-    #    scene = QtWidgets.QGraphicsScene()
-    #    scene.addPixmap(pixMap) # return pixmapitem
-    #    self.mainWindow.player.setScene(scene)
-    #    #end = time.time()
-    #    #print(end-start)
-    #    #self.mainWindow.console.clear()
-    #    QtWidgets.QApplication.processEvents()
+    def display(self, frame):
+        self.mutexDislpay.lock()
+        print("Reader.display(): ")
+        height = self.mainWindow.player.geometry().height()
+        width = self.mainWindow.player.geometry().width()
+        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        #frameImage = QImage(frame.data, frame.shape[1], frame.shape[0],
+        #QImage.Format_RGB888)
+        pixMap = QPixmap.fromImage(frame)
+        pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
+        scene = QtWidgets.QGraphicsScene()
+        scene.addPixmap(pixMap) # return pixmapitem
+        self.mainWindow.player.setScene(scene)
+        self.mutexDislpay.unlock()
+        #end = time.time()
+        #print(end-start)
+        #self.mainWindow.console.clear()
+        QtWidgets.QApplication.processEvents()
 
     
