@@ -72,7 +72,7 @@ artifacts/
 *.jpg
 *.avi
 *.weights
-*.cfg
+
 
 # Chutzpah Test files
 _Chutzpah*
