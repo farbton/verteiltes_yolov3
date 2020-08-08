@@ -27,7 +27,7 @@ class Window(QtWidgets.QMainWindow):
         self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         #self.scrollArea.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         #QtWidgets.QApplication.processEvents()
-        print("Python3Version: " + str(platform.python_version()))
+        print("Python-Version: " + str(platform.python_version()))
         print("OpenCV-Version: " + str(cv2.__version__))
         #self.signals = WorkerSignals()
         #self.signals.output_signal.connect(self.display)
