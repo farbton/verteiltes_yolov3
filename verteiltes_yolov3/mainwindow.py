@@ -29,6 +29,7 @@ class Window(QtWidgets.QMainWindow):
         #QtWidgets.QApplication.processEvents()
         print("Python-Version: " + str(platform.python_version()))
         print("OpenCV-Version: " + str(cv2.__version__))
+        # TODO alle wichtigen versionen ausgeben
         #self.signals = WorkerSignals()
         #self.signals.output_signal.connect(self.display)
         #self.signals.signal_detectionList.connect(self.writeList)

@@ -4,6 +4,7 @@ from PyQt5.QtGui import QImage, QPixmap
 import cv2
 import time
 import numpy as np
+import serial
 
 
 class ReaderSeriell(QtCore.QObject):
@@ -13,10 +14,14 @@ class ReaderSeriell(QtCore.QObject):
         self.cfgFileName = "yolo/yolov3.cfg" 
         self.weightsFile = "yolo/yolov3_512.weights" 
         self.classesFile = "yolo/weevil.names"
+        self.ser = serial.Serial('COM10', 9600)
+        print("Serialname: " , self.ser.name)
+        self.ser.write(b'hello here is the weevil hunter\'s eye \n')
+        self.ser.write(b'class quadrant confidence x y \n')
         self.imageHeight = 512
         self.imageWidth = 512
         self.conf_threshhold = 0.9 
-        self.nms_treshold = 0.9
+        self.nms_treshold = 0.5
         self.counter = 1
         self.getClassesNames()
         self.readNet()
@@ -79,7 +84,7 @@ class ReaderSeriell(QtCore.QObject):
         #print("createBlob(): " + str(end - start))
 
     def setNetInput(self):
-        print("ReaderSeriell.setNetInput()")
+        #print("ReaderSeriell.setNetInput()")
         start = time.time()
         self.net.setInput(self.blob)        
         end = time.time()
@@ -96,7 +101,6 @@ class ReaderSeriell(QtCore.QObject):
         #print("ReaderSeriell.generateBoxes_confidence_classids()")
         start = time.time()
         self.boxes = []
-        self.boxesString = []
         self.confidences = []
         self.classids = []
 
@@ -114,13 +118,19 @@ class ReaderSeriell(QtCore.QObject):
                     x = int(centerX - (bwidth / 2))
                     y = int(centerY - (bheight / 2))
 
-                    string = ("{:3.2f}, {:5d}, {:4d}, {:4d}, {:4d}".format(confidence, x, y, int(bwidth), int(bheight)))
-
-                    #self.mainWindow.listWidget.addItem(string)
-                    #self.mainWindow.listWidget.repaint()
-                    #self.mainWindow.repaint()
-                    self.boxes.append([x,y, int(bwidth), int(bheight)])
-                    self.boxesString.append(string)
+                    
+                    #serString = ("{:3.2f}, {:5d}, {:4d}, {:4d},
+                    #{:4d}".format(str(confidence), str(x), str(y),
+                    #str(bwidth), str(bheight)))
+                    #serString = 'w '.encode('utf-8') +
+                    #str(modCounter).encode('utf-8') +
+                    #str(round(confidence,2)).encode('utf-8') + '
+                    #'.encode('utf-8') + str(x).encode('utf-8') + '
+                    #'.encode('utf-8') + str(y).encode('utf-8') + '
+                    #'.encode('utf-8') + '\n'.encode('utf-8')
+                   
+                    #self.ser.write(serString)
+                    self.boxes.append([x,y, int(bwidth), int(bheight)])                   
                     self.confidences.append(float(confidence))
                     self.classids.append(classid)
                     #print("length: " + str(len(self.confidences)))
@@ -140,25 +150,45 @@ class ReaderSeriell(QtCore.QObject):
         end = time.time()
         #print("nonMaximaSupress() " + str(end - start))
 
+    def getGlobalCoordinates(self, x, y):
+        switch = {
+            1: (x, y),
+            2: (x, y + 512), 
+            3: (x, y + 1024),
+            4: (x, y + 1536),
+            5: (x + 512, y),
+            6: (x + 512, y + 512),
+            7: (x + 512, y + 1024),
+            8: (x + 512, y + 1536),
+            9: (x + 1024, y),
+            10: (x + 1024, y + 512),
+            11: (x + 1024, y + 1024),
+            12: (x + 1024, y + 1536),
+            13: (x + 1536, y),
+            14: (x + 1536, y + 512),
+            15: (x + 1536, y + 1024),
+            0 : (x + 1536, y + 1536),
+            }
+        return switch.get(self.modCounter, lambda :  "fail")     
+
     def drawLabelsAndBoxes(self):
         #print("Yolo.drawLabelsAndBoxes()")
+        self.boxesString = []
         start = time.time()
         if len(self.idxs) > 0:
             for i in self.idxs.flatten():
                 x, y = self.boxes[i][0], self.boxes[i][1]
                 w, h = self.boxes[i][2], self.boxes[i][3]
-                #x_ = x / self.imageHeight
-                #y_ = y / self.imageHeight
-                #w_ = w / self.imageHeight
-                #h_ = h / self.imageHeight
-                #x = int(x_ * self.orgSize)
-                #y = int(y_ * self.orgSize)
-                #w = int(w_ * self.orgSize)
-                #h = int(h_ * self.orgSize)
+                global_x, global_y = self.getGlobalCoordinates(x,y)
+                string = ("{:3.2f}, {:4d}, {:4d}".format(self.confidences[i], global_x, global_y))
+                serString = str(self.classids[i]).encode('utf-8') + str(' ').encode('utf-8') + str(self.modCounter).encode('utf-8') + str(' ').encode('utf-8') + str(round(self.confidences[i],2)).encode('utf-8') + str(' ').encode('utf-8') + str(global_x).encode('utf-8') + str(' ').encode('utf-8') + str(global_y).encode('utf-8') + str('\n').encode('utf-8')
+                self.ser.write(serString)
+                self.boxesString.append(string)
                 #print(x, y)
                 #color = [int(c) for c in self.colors[self.classids[i]]] # for
                 #more classes
                 cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
+                
         end = time.time()
         #print("drawLabels...() " + str(end - start))
 
@@ -264,31 +294,21 @@ class ReaderSeriell(QtCore.QObject):
         self.display()
 
     def display(self):
-        #self.mutexDislpay.lock()
         #print("Mainwindow.display(): ")
         height = self.mainWindow.player.geometry().height()
         width = self.mainWindow.player.geometry().width()
-        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        #frameImage = QImage(frame.data, frame.shape[1], frame.shape[0],
-        #QImage.Format_RGB888)
         self.frame = QImage(self.frame, 2048, 2048, QImage.Format_RGB888)
         pixMap = QPixmap.fromImage(self.frame)
         pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
         scene = QtWidgets.QGraphicsScene()
         scene.addPixmap(pixMap) # return pixmapitem
         self.mainWindow.player.setScene(scene)
-        #end = time.time()
-        #print(end-start)
-        #self.mainWindow.console.clear()
         QtWidgets.QApplication.processEvents()
-        #self.mutexDislpay.unlock()
 
     def writeList(self):
-        #self.mutexList.lock()
-        print("Mainwindow.writeList()")
+        #print("Reader_seriell.writeList()")
         self.mainWindow.listWidget.clear()
         self.mainWindow.listWidget.addItems(self.boxesString)
-        #self.mutexList.unlock()
 
     def getVideo(self):
         #print("load video ...")
@@ -297,19 +317,38 @@ class ReaderSeriell(QtCore.QObject):
         self.mainWindow.console.setText(string)
         
         cap = cv2.VideoCapture(videoName)
+        print("VideoCaptureBackendName: " + cap.getBackendName())
         print("fps: " + str(cap.get(cv2.CAP_PROP_FPS)))
         print("codec: " + str(cap.get(cv2.CAP_PROP_FOURCC)))
-        while(cap.isOpened() and self.counter <= 30):
-            #start = time.time()
-            ret, self.frame = cap.read()
-            if ret == False:
-                break
-            run_start = time.time()
-            self.detectImage()   
-            run_end = time.time()
-            print("ReaderSeriell.getVideo(): " + str(run_end - run_start))
-            self.counter += 1
-            QtWidgets.QApplication.processEvents()
-            time.sleep(0.4)
+        framenumber = 1
+        while(cap.isOpened()):
+            if framenumber % 5 == 0:
+                framenumber = 1
+                ret, self.frame = cap.read()
+                if ret == False:
+                    break
+                #run_start = time.time()
+                self.frameOneGray = cv2.cvtColor(self.frame, cv2.COLOR_RGB2GRAY)
+                self.detectImage()   
+                #run_end = time.time()
+                #print("ReaderSeriell.getVideo(): " + str(run_end - run_start))
+                #print(str(run_end - run_start))
+               # nvof = cv2.cuda_NvidiaOpticalFlow_1_0.create(2048, 2048, 5, False, False, False, 0)
+                #flow = nvof.calc(self.frameOneGray, self.frameTwoGray, None)
+                #flowUpSampled = nvof.upSampler(flow[0], 2048, 2048, nvof.getGridSize(), None) 
+                #cv2.writeOpticalFlow('OpticalFlow.flo', flowUpSampled)
+                #nvof.collectGarbage()
+                self.counter += 1
+                QtWidgets.QApplication.processEvents()
+            else:
+                ret, self.frameTwo = cap.read()
+                if ret == False:
+                    break
+                self.frameTwoGray = cv2.cvtColor(self.frameTwo, cv2.COLOR_RGB2GRAY)
+                #self.display()
+                framenumber = framenumber +1
+                #print(str(framenumber))
             
         cap.release()
+        self.ser.write(b'end of the hunt \n')
+        #self.ser.close()
