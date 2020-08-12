@@ -1,8 +1,9 @@
 # YOLO Visualization Tool
-   for CUDA 10.0 
-   cuDNN 7.5.1
-   Python 3.7.4
-   OpenCV 4.4.0 (with CUDA Support CMAKE)
+   NVIDIA Quadro RTX 5000 <br>
+   CUDA 10.0 <br>
+   cuDNN 7.5.1 <br>
+   Python 3.7.4 <br>
+   OpenCV 4.4.0 (CMAKE with CUDA Support )
 
 
 ### Install Packages
