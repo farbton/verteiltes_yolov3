@@ -5,6 +5,7 @@ import cv2
 import time
 import numpy as np
 import serial
+from functions import FuncSerial
 
 
 class ReaderSeriell(QtCore.QObject):
@@ -150,26 +151,26 @@ class ReaderSeriell(QtCore.QObject):
         end = time.time()
         #print("nonMaximaSupress() " + str(end - start))
 
-    def getGlobalCoordinates(self, x, y):
-        switch = {
-            1: (x, y),
-            2: (x, y + 512), 
-            3: (x, y + 1024),
-            4: (x, y + 1536),
-            5: (x + 512, y),
-            6: (x + 512, y + 512),
-            7: (x + 512, y + 1024),
-            8: (x + 512, y + 1536),
-            9: (x + 1024, y),
-            10: (x + 1024, y + 512),
-            11: (x + 1024, y + 1024),
-            12: (x + 1024, y + 1536),
-            13: (x + 1536, y),
-            14: (x + 1536, y + 512),
-            15: (x + 1536, y + 1024),
-            0 : (x + 1536, y + 1536),
-            }
-        return switch.get(self.modCounter, lambda :  "fail")     
+    #def getGlobalCoordinates(self, x, y):
+    #    switch = {
+    #        1: (x, y),
+    #        2: (x, y + 512),
+    #        3: (x, y + 1024),
+    #        4: (x, y + 1536),
+    #        5: (x + 512, y),
+    #        6: (x + 512, y + 512),
+    #        7: (x + 512, y + 1024),
+    #        8: (x + 512, y + 1536),
+    #        9: (x + 1024, y),
+    #        10: (x + 1024, y + 512),
+    #        11: (x + 1024, y + 1024),
+    #        12: (x + 1024, y + 1536),
+    #        13: (x + 1536, y),
+    #        14: (x + 1536, y + 512),
+    #        15: (x + 1536, y + 1024),
+    #        0 : (x + 1536, y + 1536),
+    #        }
+    #    return switch.get(self.modCounter, lambda : "fail")
 
     def drawLabelsAndBoxes(self):
         #print("Yolo.drawLabelsAndBoxes()")
@@ -179,7 +180,7 @@ class ReaderSeriell(QtCore.QObject):
             for i in self.idxs.flatten():
                 x, y = self.boxes[i][0], self.boxes[i][1]
                 w, h = self.boxes[i][2], self.boxes[i][3]
-                global_x, global_y = self.getGlobalCoordinates(x,y)
+                global_x, global_y = FuncSerial.getGlobalCoordinates(self.modCounter, x, y)
                 string = ("{:3.2f}, {:4d}, {:4d}".format(self.confidences[i], global_x, global_y))
                 serString = str(self.classids[i]).encode('utf-8') + str(' ').encode('utf-8') + str(self.modCounter).encode('utf-8') + str(' ').encode('utf-8') + str(round(self.confidences[i],2)).encode('utf-8') + str(' ').encode('utf-8') + str(global_x).encode('utf-8') + str(' ').encode('utf-8') + str(global_y).encode('utf-8') + str('\n').encode('utf-8')
                 self.ser.write(serString)
@@ -192,11 +193,11 @@ class ReaderSeriell(QtCore.QObject):
         end = time.time()
         #print("drawLabels...() " + str(end - start))
 
-    def counter1(self):
+    def counter1():
         print("counter1()")
         self.frame[0:512, 0:512] = self.tile
 
-    def counter2(self):
+    def counter2():
         print("counter2()")
         self.frame[0:512, 512:1024] = self.tile
 
@@ -333,9 +334,11 @@ class ReaderSeriell(QtCore.QObject):
                 #run_end = time.time()
                 #print("ReaderSeriell.getVideo(): " + str(run_end - run_start))
                 #print(str(run_end - run_start))
-               # nvof = cv2.cuda_NvidiaOpticalFlow_1_0.create(2048, 2048, 5, False, False, False, 0)
+               # nvof = cv2.cuda_NvidiaOpticalFlow_1_0.create(2048, 2048, 5,
+               # False, False, False, 0)
                 #flow = nvof.calc(self.frameOneGray, self.frameTwoGray, None)
-                #flowUpSampled = nvof.upSampler(flow[0], 2048, 2048, nvof.getGridSize(), None) 
+                #flowUpSampled = nvof.upSampler(flow[0], 2048, 2048,
+                #nvof.getGridSize(), None)
                 #cv2.writeOpticalFlow('OpticalFlow.flo', flowUpSampled)
                 #nvof.collectGarbage()
                 self.counter += 1
@@ -346,7 +349,7 @@ class ReaderSeriell(QtCore.QObject):
                     break
                 self.frameTwoGray = cv2.cvtColor(self.frameTwo, cv2.COLOR_RGB2GRAY)
                 #self.display()
-                framenumber = framenumber +1
+                framenumber = framenumber + 1
                 #print(str(framenumber))
             
         cap.release()
