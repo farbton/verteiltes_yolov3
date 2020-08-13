@@ -2,7 +2,7 @@ import mainwindow
 import sys
 # funktionierende Config auf Workstation:
 # Python 3.7.4
-# OpenCV 4.4
+# OpenCV 4.4.0
 # CUDA 10.0
 # cuDNN 7.5.1
 #

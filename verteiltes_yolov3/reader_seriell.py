@@ -55,27 +55,27 @@ class ReaderSeriell(QtCore.QObject):
         self.modCounter = self.counter % 16
         #print("modCounter: " + str(self.modCounter))
 
-    def getTile(self):
-        #print("ReaderSeriell.getTile()")
-        switch = {
-            1: self.frame[0:512, 0:512],
-            2: self.frame[0:512, 512:1024], 
-            3: self.frame[0:512, 1024:1536],
-            4: self.frame[0:512, 1536:2048],
-            5: self.frame[512:1024, 0:512],
-            6: self.frame[512:1024, 512:1024],
-            7: self.frame[512:1024, 1024:1536],
-            8: self.frame[512:1024, 1536:2048],
-            9: self.frame[1024:1536, 0:512],
-            10: self.frame[1024:1536, 512:1024],
-            11: self.frame[1024:1536, 1024:1536],
-            12: self.frame[1024:1536, 1536:2048],
-            13: self.frame[1536:2048, 0:512],
-            14: self.frame[1536:2048, 512:1024],
-            15: self.frame[1536:2048, 1024:1536],
-            0 : self.frame[1536:2048, 1536:2048],
-            }
-        return switch.get(self.modCounter, "fail")
+    #def getTile(self):
+    #    #print("ReaderSeriell.getTile()")
+    #    switch = {
+    #        1: self.frame[0:512, 0:512],
+    #        2: self.frame[0:512, 512:1024], 
+    #        3: self.frame[0:512, 1024:1536],
+    #        4: self.frame[0:512, 1536:2048],
+    #        5: self.frame[512:1024, 0:512],
+    #        6: self.frame[512:1024, 512:1024],
+    #        7: self.frame[512:1024, 1024:1536],
+    #        8: self.frame[512:1024, 1536:2048],
+    #        9: self.frame[1024:1536, 0:512],
+    #        10: self.frame[1024:1536, 512:1024],
+    #        11: self.frame[1024:1536, 1024:1536],
+    #        12: self.frame[1024:1536, 1536:2048],
+    #        13: self.frame[1536:2048, 0:512],
+    #        14: self.frame[1536:2048, 512:1024],
+    #        15: self.frame[1536:2048, 1024:1536],
+    #        0 : self.frame[1536:2048, 1536:2048],
+    #        }
+    #    return switch.get(self.modCounter, "fail")
 
     def createBlob(self):
         #print("ReaderSeriell.createBlob()")
@@ -283,7 +283,7 @@ class ReaderSeriell(QtCore.QObject):
     def detectImage(self): 
         #print("Yolo.detectImage()")
         self.modCount()
-        self.tile = self.getTile()
+        self.tile = FuncSerial.getTile(self.modCounter, self.frame)
         self.createBlob()
         self.setNetInput()
         self.getOutput()

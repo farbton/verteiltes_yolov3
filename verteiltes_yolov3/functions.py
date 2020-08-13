@@ -24,7 +24,7 @@ class FuncSerial():
         return switch.get(modCounter, lambda :  "fail") 
 
     def getTile(modCounter, frame):
-        print("FuncSerial.getTile()")
+        #print("FuncSerial.getTile()")
         switch = {
             1: frame[0:512, 0:512],
             2: frame[0:512, 512:1024], 
