@@ -2,11 +2,11 @@ import sys
 import cv2
 import os, platform
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage, QFont
 from PyQt5 import QtCore
 from signals import WorkerSignals
 
-from reader_parallel import ReaderParallel
+#from reader_parallel import ReaderParallel
 from reader_seriell import ReaderSeriell
 #from yolo import Yolo
 
@@ -16,19 +16,26 @@ class Window(QtWidgets.QMainWindow):
     def __init__(self):       
         super(Window, self).__init__()       
         uic.loadUi("gui.ui", self)
+        self.console.setFont(QFont('Times', 9))
         self.setWindowTitle("Viewer for Yolov3")
         self.imageName = "images/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros0.jpg"
         self.imageName512 = "images_512/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros840_rot90sub3.jpg"
+        print("Python-Version: " + str(platform.python_version()))
+        pString = "Python-Version: " + str(platform.python_version() + "\n")
+        self.console.setText(self.console.text() + pString)
+        
+        print("OpenCV-Version: " + str(cv2.__version__))
+        cvString = "OpenCV-Version: " + str(cv2.__version__ + "\n")
+        self.console.setText(self.console.text() + cvString)
+        
         self.readerSeriell = ReaderSeriell(self)
-        self.readerParallel = ReaderParallel(self)
+        #self.readerParallel = ReaderParallel(self)
         self.lock = True
         self.mutexDislpay = QtCore.QMutex()
         self.mutexList = QtCore.QMutex()
         self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         #self.scrollArea.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-        #QtWidgets.QApplication.processEvents()
-        print("Python-Version: " + str(platform.python_version()))
-        print("OpenCV-Version: " + str(cv2.__version__))
+
         # TODO alle wichtigen versionen ausgeben
         #self.signals = WorkerSignals()
         #self.signals.output_signal.connect(self.display)

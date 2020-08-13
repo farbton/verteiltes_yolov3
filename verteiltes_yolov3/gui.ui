@@ -174,10 +174,7 @@
              <property name="autoFillBackground">
               <bool>false</bool>
              </property>
-             <property name="text">
-              <string>ready ... 
-</string>
-             </property>
+             
              <property name="textFormat">
               <enum>Qt::AutoText</enum>
              </property>

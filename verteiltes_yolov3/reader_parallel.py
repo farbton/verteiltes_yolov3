@@ -40,7 +40,7 @@ class ReaderParallel(QtCore.QObject):
 
     def readNet(self):
         #print("Reader.readNet()")
-        string = self.mainWindow.console.text() + "read net ...  "
+        string = self.mainWindow.console.text() + "reader_parallel read net ...  "
         self.mainWindow.console.setText(string)
         #self.mainWindow.console.repaint()
         #self.autoscroll()
