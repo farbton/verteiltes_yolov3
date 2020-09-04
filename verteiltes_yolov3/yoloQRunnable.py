@@ -5,12 +5,13 @@ from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QImage
 from signals import WorkerSignals
+import functions
 
-class Yolo(QtCore.QRunnable):
+class Yolo(QtCore.QThread):
 
     def __init__(self, mainWindow, net, layerNames, mutexNet, frame, counter):
-        QtCore.QRunnable.__init__(self)
-        print("Yolo.__init__(), counter: " + str(counter))
+        QtCore.QThread.__init__(self)
+        #print("QRunnable.__init__(), counter: " + str(counter))
         self.mainWindow = mainWindow
         self.net = net
         self.layerNames = layerNames
@@ -36,13 +37,18 @@ class Yolo(QtCore.QRunnable):
         self.mutexNet.unlock()
         QtWidgets.QApplication.processEvents()
         #QtCore.QEventLoop.processEvents(QtCore.QEventLoop.AllEvents)
-        print("Yolo.run()_after_detectImage(): " + str(run_end - run_start))
+        #print("QRunnable.run()_after_detectImage(): " + str(run_end - run_start))
+        #string = "QRunnable.run(): " + str(round(run_end - run_start,4)) + "\n"              
+        #self.mainWindow.console.setText(self.mainWindow.console.text() + string)
+        #self.mainWindow.scrollArea.verticalScrollBar().setValue(self.mainWindow.scrollArea.verticalScrollBar().maximum())
+        #self.mainWindow.scrollArea.verticalScrollBar().setSliderDown(True)
         #self.exec_(QtCore.QEventLoop.AllEvents)
 
     def detectImage(self): 
         #print("Yolo.detectImage()")
         self.modCount()
-        self.tile = self.getTile()
+        #self.tile = self.getTile()
+        self.tile = functions.getTile(self.modCounter,self.frame)
         self.createBlob()
         self.setNetInput()
         self.getOutput()
@@ -50,34 +56,33 @@ class Yolo(QtCore.QRunnable):
         #self.printBoxes()
         self.nonMaximaSupress()
         self.drawLabelsAndBoxes()
-        self.concatTileAndFrame()
+        self.frame = functions.concatTileAndFrame(self.modCounter,self.frame,self.tile)
         
     def createBlob(self):
-        print("Yolo.createBlob()")
+        #print("QRunnable.createBlob()")
         start = time.time()
         self.blob = cv2.dnn.blobFromImage(self.tile, 1 / 255, (self.imageHeight, self.imageWidth), [0,0,0], 1, crop=False)
         end = time.time()
         #print("createBlob(): " + str(end - start))
 
     def setNetInput(self):
-        print("Yolo.setNetInput()")
+        #print("QRunnable.setNetInput()")
         start = time.time()
         self.net.setInput(self.blob)        
         end = time.time()
         #print("setNetInput(): " + str(end - start))
 
     def getOutput(self):
-        print("Yolo.getOutput()")
+        #print("QRunnable.getOutput()")
         start = time.time()
         self.outs = self.net.forward(self.layerNames)
         end = time.time()
         #print("getOutput(): " + str(end - start))
 
     def generateBoxes_confidences_classids(self):
-        print("Yolo.generateBoxes_confidence_classids()")
+        #print("QRunnable.generateBoxes_confidence_classids()")
         start = time.time()
-        self.boxes = []
-        self.boxesString = []
+        self.boxes = []       
         self.confidences = []
         self.classids = []
 
@@ -94,14 +99,11 @@ class Yolo(QtCore.QRunnable):
                 
                     x = int(centerX - (bwidth / 2))
                     y = int(centerY - (bheight / 2))
-
-                    string = ("{:3.2f}, {:5d}, {:4d}, {:4d}, {:4d}".format(confidence, x, y, int(bwidth), int(bheight)))
-
+                   
                     #self.mainWindow.listWidget.addItem(string)
                     #self.mainWindow.listWidget.repaint()
                     #self.mainWindow.repaint()
                     self.boxes.append([x,y, int(bwidth), int(bheight)])
-                    self.boxesString.append(string)
                     self.confidences.append(float(confidence))
                     self.classids.append(classid)
                     #print("length: " + str(len(self.confidences)))
@@ -123,135 +125,23 @@ class Yolo(QtCore.QRunnable):
 
     def drawLabelsAndBoxes(self):
         #print("Yolo.drawLabelsAndBoxes()")
+        self.boxesString = []
         start = time.time()
         if len(self.idxs) > 0:
             for i in self.idxs.flatten():
                 x, y = self.boxes[i][0], self.boxes[i][1]
                 w, h = self.boxes[i][2], self.boxes[i][3]
-                #x_ = x / self.imageHeight
-                #y_ = y / self.imageHeight
-                #w_ = w / self.imageHeight
-                #h_ = h / self.imageHeight
-                #x = int(x_ * self.orgSize)
-                #y = int(y_ * self.orgSize)
-                #w = int(w_ * self.orgSize)
-                #h = int(h_ * self.orgSize)
-                #print(x, y)
+                global_x, global_y = functions.getGlobalCoordinates(self.modCounter, x, y)
+                string = ("{:3.2f}, {:4d}, {:4d}".format(self.confidences[i], global_x, global_y))
                 #color = [int(c) for c in self.colors[self.classids[i]]] # for
                 #more classes
+                #string = ("{:3.2f}, {:4d}, {:4d}".format(self.confidences[i], x, y))
+                self.boxesString.append(string)
                 cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
         end = time.time()
         #print("drawLabels...() " + str(end - start))
 
     def modCount(self):
         self.modCounter = self.counter % 16
-        print("modCounter: " + str(self.modCounter))
+        #print("QRunnable.modCount(): modcounter=" + str(self.modCounter))
 
-    def getTile(self):
-        print("Yolo.getTile()")
-        switch = {
-            1: self.frame[0:512, 0:512],
-            2: self.frame[0:512, 512:1024], 
-            3: self.frame[0:512, 1024:1536],
-            4: self.frame[0:512, 1536:2048],
-            5: self.frame[512:1024, 0:512],
-            6: self.frame[512:1024, 512:1024],
-            7: self.frame[512:1024, 1024:1536],
-            8: self.frame[512:1024, 1536:2048],
-            9: self.frame[1024:1536, 0:512],
-            10: self.frame[1024:1536, 512:1024],
-            11: self.frame[1024:1536, 1024:1536],
-            12: self.frame[1024:1536, 1536:2048],
-            13: self.frame[1536:2048, 0:512],
-            14: self.frame[1536:2048, 512:1024],
-            15: self.frame[1536:2048, 1024:1536],
-            0 : self.frame[1536:2048, 1536:2048],
-            }
-        return switch.get(self.modCounter, "fail")
-
-    def counter1(self):
-        print("counter1()")
-        self.frame[0:512, 0:512] = self.tile
-
-    def counter2(self):
-        print("counter2()")
-        self.frame[0:512, 512:1024] = self.tile
-
-    def counter3():
-        print("counter3()")
-        self.frame[0:512, 1024:1536] = self.tile
-
-    def counter4():
-        print("counter4()")
-        self.frame[0:512, 1536:2048] = self.tile
-
-    def counter5():
-        print("counter5()")
-        self.frame[512:1024, 0:512] = self.tile
-
-    def counter6():
-        print("counter6()")
-        self.frame[512:1024, 512:1024] = self.tile
-
-    def counter7():
-        print("counter7()")
-        self.frame[512:1024, 1024:1536] = self.tile
-
-    def counter8():
-        print("counter8()")
-        self.frame[512:1024, 1536:2048] = self.tile
-
-    def counter9():
-        print("counter9()")
-        self.frame[1024:1536, 0:512] = self.tile
-
-    def counter10():
-        print("counter10()")
-        self.frame[1024:1536, 512:1024] = self.tile
-
-    def counter11():
-        print("counter11()")
-        self.frame[1024:1536, 1024:1536] = self.tile
-
-    def counter12():
-        print("counter12()")
-        self.frame[1024:1536, 1536:2048] = self.tile
-
-    def counter13():
-        print("counter13()")
-        self.frame[1536:2048, 0:512] = self.tile
-
-    def counter14():
-        print("counter14()")
-        self.frame[1536:2048, 512:1024] = self.tile
-
-    def counter15():
-        print("counter15()")
-        self.frame[1536:2048, 1024:1536] = self.tile
-
-    def counter16():
-        print("counter16()")
-        self.frame[1536:2048, 1536:2048] = self.tile
-
-    def concatTileAndFrame(self):
-        print("Yolo.concatTileAndFrame()")
-
-        switch = {
-            1: self.counter1,
-            2: self.counter2, 
-            3: self.counter3,
-            4: self.counter4,
-            5: self.counter5,
-            6: self.counter6,
-            7: self.counter7,
-            8: self.counter8,
-            9: self.counter9,
-            10: self.counter10,
-            11: self.counter11,
-            12: self.counter12,
-            13: self.counter13,
-            14: self.counter14,
-            15: self.counter15,
-            0 : self.counter16,
-            }
-        switch.get(self.modCounter, lambda :  "fail") 

@@ -6,7 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage, QFont
 from PyQt5 import QtCore
 from signals import WorkerSignals
 
-#from reader_parallel import ReaderParallel
+from reader_parallel import ReaderParallel
 from reader_seriell import ReaderSeriell
 #from yolo import Yolo
 
@@ -19,17 +19,17 @@ class Window(QtWidgets.QMainWindow):
         self.console.setFont(QFont('Times', 9))
         self.setWindowTitle("Viewer for Yolov3")
         self.imageName = "images/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros0.jpg"
-        self.imageName512 = "images_512/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros840_rot90sub3.jpg"
-        print("Python-Version: " + str(platform.python_version()))
+        self.imageName512 = "images_512/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros840_rot90sub5.jpg"
+        #print("Python-Version: " + str(platform.python_version()))
         pString = "Python-Version: " + str(platform.python_version() + "\n")
         self.console.setText(self.console.text() + pString)
         
-        print("OpenCV-Version: " + str(cv2.__version__))
+        #print("OpenCV-Version: " + str(cv2.__version__))
         cvString = "OpenCV-Version: " + str(cv2.__version__ + "\n")
         self.console.setText(self.console.text() + cvString)
         
         self.readerSeriell = ReaderSeriell(self)
-        #self.readerParallel = ReaderParallel(self)
+        self.readerParallel = ReaderParallel(self)
         self.lock = True
         self.mutexDislpay = QtCore.QMutex()
         self.mutexList = QtCore.QMutex()
@@ -43,7 +43,7 @@ class Window(QtWidgets.QMainWindow):
 
     def start(self):        
         #self.refresh_button.clicked.connect(self.label_write)
-        #self.actionload_image.triggered.connect(self.loadImage)
+        self.actionload_image.triggered.connect(self.loadImage)
         self.actionload_video_parallel.triggered.connect(self.loadVideoParallel)
         self.actionload_video_seriell.triggered.connect(self.loadVideoSeriell)
         #self.pushButtonStartDetection.clicked.connect(self.startDetection)
@@ -82,38 +82,39 @@ class Window(QtWidgets.QMainWindow):
         self.listWidget.addItems(list)
         #self.mutexList.unlock()
     
-    #def setPlayerHeightWidth(self):
-    #    self.playerHeight = self.player.geometry().height()
-    #    self.playerWidth = self.player.geometry().width()
+    def setPlayerHeightWidth(self):
+        self.playerHeight = self.player.geometry().height()
+        self.playerWidth = self.player.geometry().width()
 
-    #def convertCv2ToQImage(self):
-    #    self.qimage = QImage(self.detectedImage, 512, 512, QImage.Format_BGR888)
+    def convertCv2ToQImage(self):
+        self.qimage = QImage(self.detectedImage, 512, 512, QImage.Format_RGB888)
 
-    #def qimageToPixmap(self):
-    #    self.pixMap = QPixmap(self.qimage)
+    def qimageToPixmap(self):
+        self.pixMap = QPixmap(self.qimage)
 
-    #def resizePixmap(self):
-    #    self.pixMap = self.pixMap.scaled(QtCore.QSize(self.playerHeight, self.playerWidth), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
+    def resizePixmap(self):
+        self.pixMap = self.pixMap.scaled(QtCore.QSize(self.playerHeight, self.playerWidth), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
     
-    #def pixmapSetScene(self):
-    #    self.scene = QtWidgets.QGraphicsScene()
-    #    self.scene.addPixmap(self.pixMap) # return pixmapitem
+    def pixmapSetScene(self):
+        self.scene = QtWidgets.QGraphicsScene()
+        self.scene.addPixmap(self.pixMap) # return pixmapitem
 
-    #def addSceneToPlayer(self):
-    #    self.player.setScene(self.scene)
+    def addSceneToPlayer(self):
+        self.player.setScene(self.scene)
 
-    #def loadImage(self):
-    #    self.statusBar().showMessage("load image ...")
-    #    self.statusBar().repaint()
-    #    self.setPlayerHeightWidth()
-    #    self.qimage = self.reader.getImage(self.imageName512)
-    #    self.autoscroll()
-    #   # self.qimageToPixmap()
-    #    #self.resizePixmap()
-    #    #self.pixmapSetScene()
-    #    #self.addSceneToPlayer()
-    #    self.lock = False
-    #    self.statusBar().clearMessage()
+    def loadImage(self):
+        self.statusBar().showMessage("load image ...")
+        self.statusBar().repaint()
+        self.setPlayerHeightWidth()
+        self.detectedImage = self.readerSeriell.getImage(self.imageName512)
+        self.convertCv2ToQImage()
+        #self.autoscroll()
+        self.qimageToPixmap()
+        self.resizePixmap()
+        self.pixmapSetScene()
+        self.addSceneToPlayer()
+        self.lock = False
+        self.statusBar().clearMessage()
 
     def loadVideoParallel(self):
         self.statusBar().showMessage("play video ...")

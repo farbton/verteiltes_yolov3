@@ -14,8 +14,10 @@ class ReaderSeriell(QtCore.QObject):
         self.mainWindow = mainWindow
         #self.cfgFileName = "yolo/yolov3.cfg" 
         #self.weightsFile = "yolo/yolov3_512.weights" 
-        self.cfgFileName = "yolo/yolov4-obj.cfg" 
-        self.weightsFile = "yolo/yolov4-obj_best.weights"
+        #self.cfgFileName = "yolo/yolov4-obj.cfg" 
+        #self.weightsFile = "yolo/yolov4-obj_best.weights"
+        self.cfgFileName = "yolo/yolov4-tiny-kirko.cfg" 
+        self.weightsFile = "yolo/yolov4-tiny-kirko_best.weights"
         self.classesFile = "yolo/weevil.names"
         #self.ser = serial.Serial('COM10', 9600)
         #print("Serialname: " , self.ser.name)

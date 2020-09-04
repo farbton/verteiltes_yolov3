@@ -30,6 +30,9 @@
     <Compile Include="reader_seriell.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="reader_seriell_yolov4_tiny.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="signals.py">
       <SubType>Code</SubType>
     </Compile>
