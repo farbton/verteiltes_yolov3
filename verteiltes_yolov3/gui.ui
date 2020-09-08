@@ -164,8 +164,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1471</width>
-            <height>216</height>
+            <width>1465</width>
+            <height>186</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -174,7 +174,6 @@
              <property name="autoFillBackground">
               <bool>false</bool>
              </property>
-             
              <property name="textFormat">
               <enum>Qt::AutoText</enum>
              </property>
@@ -217,7 +216,7 @@
      <x>0</x>
      <y>0</y>
      <width>1525</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatei">
@@ -228,6 +227,7 @@
     <addaction name="separator"/>
     <addaction name="actionload_video_parallel"/>
     <addaction name="actionload_video_seriell"/>
+    <addaction name="actionload_video_seriell_yolo_tiny"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -262,6 +262,11 @@
   <action name="actionload_video_seriell">
    <property name="text">
     <string>load video seriell</string>
+   </property>
+  </action>
+  <action name="actionload_video_seriell_yolo_tiny">
+   <property name="text">
+    <string>load video seriell yolov4_tiny</string>
    </property>
   </action>
  </widget>
