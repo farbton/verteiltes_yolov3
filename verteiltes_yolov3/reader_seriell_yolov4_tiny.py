@@ -8,7 +8,7 @@ import serial
 #from functions import FuncSerial
 import functions
 
-class ReaderSeriell(QtCore.QObject):
+class ReaderSeriellTiny(QtCore.QObject):
     def __init__(self, mainWindow):
         QtCore.QObject.__init__(self)
         self.mainWindow = mainWindow
@@ -229,45 +229,45 @@ class ReaderSeriell(QtCore.QObject):
         framenumber = 1
         starttime = time.time()
         while(cap.isOpened()): # and self.counter <=1
-            if framenumber % 5 == 0:
-                framenumber = 1
-                self.begin_time = time.time()
-                ret, self.frame = cap.read()
-                if ret == False:
-                    break
-                #self.frameOneGray = cv2.cvtColor(self.frame,
-                #cv2.COLOR_RGB2GRAY)
-                run_start = time.time()
-                self.detectImage()   
-                run_end = time.time()
-                self.netTime = run_end - run_start
-                self.netTimeList.append(self.netTime)
-                #print("ReaderSeriell.detectImage(): " + str(run_end -
-                #run_start))
-                #string = "ReaderSeriell.detectImage(): " + str(round(run_end -
-                #run_start,4)) + "\n"
-                #self.mainWindow.console.setText(self.mainWindow.console.text()
-                #+ string)
-                #self.mainWindow.scrollArea.verticalScrollBar().setValue(self.mainWindow.scrollArea.verticalScrollBar().maximum())
-                #self.mainWindow.scrollArea.verticalScrollBar().setSliderDown(True)
-                #print(str(run_end - run_start))
-               # nvof = cv2.cuda_NvidiaOpticalFlow_1_0.create(2048, 2048, 5,
-               # False, False, False, 0)
-                #flow = nvof.calc(self.frameOneGray, self.frameTwoGray, None)
-                #flowUpSampled = nvof.upSampler(flow[0], 2048, 2048,
-                #nvof.getGridSize(), None)
-                #cv2.writeOpticalFlow('OpticalFlow.flo', flowUpSampled)
-                #nvof.collectGarbage()
-                self.counter += 1
-                QtWidgets.QApplication.processEvents()
-            else:
-                ret, self.frameTwo = cap.read()
-                if ret == False:
-                    break
+           # if framenumber % 2 == 0:
+            framenumber = 1
+            self.begin_time = time.time()
+            ret, self.frame = cap.read()
+            if ret == False:
+                break
+            #self.frameOneGray = cv2.cvtColor(self.frame,
+            #cv2.COLOR_RGB2GRAY)
+            run_start = time.time()
+            self.detectImage()   
+            run_end = time.time()
+            self.netTime = run_end - run_start
+            self.netTimeList.append(self.netTime)
+            #print("ReaderSeriell.detectImage(): " + str(run_end -
+            #run_start))
+            #string = "ReaderSeriell.detectImage(): " + str(round(run_end -
+            #run_start,4)) + "\n"
+            #self.mainWindow.console.setText(self.mainWindow.console.text()
+            #+ string)
+            #self.mainWindow.scrollArea.verticalScrollBar().setValue(self.mainWindow.scrollArea.verticalScrollBar().maximum())
+            #self.mainWindow.scrollArea.verticalScrollBar().setSliderDown(True)
+            #print(str(run_end - run_start))
+            # nvof = cv2.cuda_NvidiaOpticalFlow_1_0.create(2048, 2048, 5,
+            # False, False, False, 0)
+            #flow = nvof.calc(self.frameOneGray, self.frameTwoGray, None)
+            #flowUpSampled = nvof.upSampler(flow[0], 2048, 2048,
+            #nvof.getGridSize(), None)
+            #cv2.writeOpticalFlow('OpticalFlow.flo', flowUpSampled)
+            #nvof.collectGarbage()
+            self.counter += 1
+            QtWidgets.QApplication.processEvents()
+          # else:
+          #      ret, self.frameTwo = cap.read()
+          #      if ret == False:
+          #          break
                 #self.frameTwoGray = cv2.cvtColor(self.frameTwo,
                 #cv2.COLOR_RGB2GRAY)
                 #self.display()
-                framenumber = framenumber + 1
+          #      framenumber = framenumber + 1
                 #print(str(framenumber))
             
         cap.release()

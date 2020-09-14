@@ -8,6 +8,7 @@ from signals import WorkerSignals
 
 from reader_parallel import ReaderParallel
 from reader_seriell import ReaderSeriell
+from reader_seriell_yolov4_tiny import ReaderSeriellTiny
 #from yolo import Yolo
 
 #Klasse die in das MainWindow schreiben darf
@@ -30,6 +31,7 @@ class Window(QtWidgets.QMainWindow):
         
         self.readerSeriell = ReaderSeriell(self)
         self.readerParallel = ReaderParallel(self)
+        self.readerSeriellTiny = ReaderSeriellTiny(self)
         self.lock = True
         self.mutexDislpay = QtCore.QMutex()
         self.mutexList = QtCore.QMutex()
@@ -46,6 +48,7 @@ class Window(QtWidgets.QMainWindow):
         self.actionload_image.triggered.connect(self.loadImage)
         self.actionload_video_parallel.triggered.connect(self.loadVideoParallel)
         self.actionload_video_seriell.triggered.connect(self.loadVideoSeriell)
+        self.actionload_video_seriell_yolo_tiny.triggered.connect(self.loadVideoSeriellTiny)
         #self.pushButtonStartDetection.clicked.connect(self.startDetection)
 
     #def startDetection(self):
@@ -125,6 +128,11 @@ class Window(QtWidgets.QMainWindow):
     def loadVideoSeriell(self):
         self.statusBar().showMessage("play video ...")
         self.readerSeriell.getVideo()
+        self.statusBar().clearMessage()
+
+    def loadVideoSeriellTiny(self):
+        self.statusBar().showMessage("play video ...")
+        self.readerSeriellTiny.getVideo()
         self.statusBar().clearMessage()
 
     #def autoscroll(self):
