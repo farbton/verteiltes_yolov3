@@ -19,16 +19,16 @@ class ReaderSeriellTiny(QtCore.QObject):
         self.cfgFileName = "yolo/yolov4-tiny-kirko.cfg" 
         self.weightsFile = "yolo/yolov4-tiny-kirko_best.weights"
         self.classesFile = "yolo/weevil.names"
-        #self.ser = serial.Serial('COM10', 9600)
-        #print("Serialname: " , self.ser.name)
-        #self.ser.write(b'hello here is the weevil hunter\'s eye \n')
-        #self.ser.write(b'class quadrant confidence x y \n')
-        #sString = "COM-Port: " + self.ser.name + "\n"
-        #self.mainWindow.console.setText(self.mainWindow.console.text() +
-        #sString)
-        #strich = "========================================================\n"
-        #self.mainWindow.console.setText(self.mainWindow.console.text() +
-        #strich)
+        self.ser = serial.Serial('COM4', 115200)
+        print("Serialname: " , self.ser.name)
+        time.sleep(2)
+        #self.ser.write('weevil hunter\'s eye \n'.encode('utf-8'))
+        self.ser.write(b'cls quad conf x y \n')
+        self.ser.flush()
+        sString = "COM-Port: " + self.ser.name + "\n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
+        strich = "========================================================\n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + strich)
         self.imageHeight = 512
         self.imageWidth = 512
         self.conf_threshhold = 0.9 
@@ -137,17 +137,20 @@ class ReaderSeriellTiny(QtCore.QObject):
                 w, h = self.boxes[i][2], self.boxes[i][3]
                 global_x, global_y = functions.getGlobalCoordinates(self.modCounter, x, y)
                 string = ("{:3.2f}, {:4d}, {:4d}".format(self.confidences[i], global_x, global_y))
-                #serString = str(self.classids[i]).encode('utf-8') + str('
-                #').encode('utf-8') + str(self.modCounter).encode('utf-8') +
-                #str(' ').encode('utf-8') +
-                #str(round(self.confidences[i],2)).encode('utf-8') + str('
-                #').encode('utf-8') + str(global_x).encode('utf-8') + str('
-                #').encode('utf-8') + str(global_y).encode('utf-8') +
-                #str('\n').encode('utf-8')
-                #self.ser.write(serString)
+                serString = str(self.classids[i]).encode('utf-8') + str(' ').encode('utf-8') \
+                          + str(self.modCounter).encode('utf-8') + str(' ').encode('utf-8') \
+                          + str(round(self.confidences[i],2)).encode('utf-8') +str(' ').encode('utf-8') \
+                          + str(global_x).encode('utf-8') + str(' ').encode('utf-8') \
+                          + str(global_y).encode('utf-8') + str(' ').encode('utf-8') \
+                          + str('\n').encode('utf-8')
+                self.ser.write(serString)
+                #time.sleep(0.01)
+                #print(string)
+                #self.ser.write(b'\n')
+                #self.ser.flush()
                 #color = [int(c) for c in self.colors[self.classids[i]]] # for
                 #more classes
-                self.boxesString.append(string)
+                self.boxesString.append(string) 
                 cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
                 
         #end = time.time()
@@ -228,7 +231,7 @@ class ReaderSeriellTiny(QtCore.QObject):
         print("codec: " + str(cap.get(cv2.CAP_PROP_FOURCC)))
         framenumber = 1
         starttime = time.time()
-        while(cap.isOpened()): # and self.counter <=1
+        while(cap.isOpened() and self.counter <=16): # and self.counter <=1
            # if framenumber % 2 == 0:
             framenumber = 1
             self.begin_time = time.time()
@@ -271,13 +274,13 @@ class ReaderSeriellTiny(QtCore.QObject):
                 #print(str(framenumber))
             
         cap.release()
-        #self.ser.write(b'end of the hunt \n')
+        self.ser.write(b'end of hunt \n')
         endtime = time.time()
-        avgCyle = round(sum(self.oneCycleList[2:]) / len(self.oneCycleList[2:]),3)
-        avgNetTime = round(sum(self.netTimeList[2:]) / len(self.netTimeList[2:]),3)
-        print("ser_avg_CycleTime: " + str(avgCyle) + " avg_NetTime: " + str(avgNetTime))
+        #avgCyle = round(sum(self.oneCycleList[2:]) / len(self.oneCycleList[2:]),3)
+        #avgNetTime = round(sum(self.netTimeList[2:]) / len(self.netTimeList[2:]),3)
+        #print("(tinyV4)ser_avg_CycleTime: " + str(avgCyle) + " avg_TinyV4NetTime: " + str(avgNetTime))
         print(str(endtime - starttime))
-        #self.ser.close()
+        self.ser.close()
 
     def getImage(self, filename):
         self.tile = cv2.imread(filename)

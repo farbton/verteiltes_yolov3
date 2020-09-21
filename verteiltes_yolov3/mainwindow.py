@@ -1,6 +1,6 @@
 import sys
 import cv2
-import os, platform
+import os, platform, time
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QPixmap, QImage, QFont
 from PyQt5 import QtCore
@@ -21,7 +21,8 @@ class Window(QtWidgets.QMainWindow):
         self.setWindowTitle("Viewer for Yolov3")
         self.imageName = "images/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros0.jpg"
         self.imageName512 = "images_512/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros840_rot90sub5.jpg"
-        #print("Python-Version: " + str(platform.python_version()))
+       
+       #print("Python-Version: " + str(platform.python_version()))
         pString = "Python-Version: " + str(platform.python_version() + "\n")
         self.console.setText(self.console.text() + pString)
         
@@ -36,6 +37,7 @@ class Window(QtWidgets.QMainWindow):
         self.mutexDislpay = QtCore.QMutex()
         self.mutexList = QtCore.QMutex()
         self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        #time.sleep(5)
         #self.scrollArea.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
 
         # TODO alle wichtigen versionen ausgeben
