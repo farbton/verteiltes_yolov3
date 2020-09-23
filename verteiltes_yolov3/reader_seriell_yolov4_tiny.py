@@ -137,16 +137,17 @@ class ReaderSeriellTiny(QtCore.QObject):
                 w, h = self.boxes[i][2], self.boxes[i][3]
                 global_x, global_y = functions.getGlobalCoordinates(self.modCounter, x, y)
                 string = ("{:3.2f}, {:4d}, {:4d}".format(self.confidences[i], global_x, global_y))
-                serString = str(self.classids[i]).encode('utf-8') + str(' ').encode('utf-8') \
-                          + str(self.modCounter).encode('utf-8') + str(' ').encode('utf-8') \
-                          + str(round(self.confidences[i],2)).encode('utf-8') +str(' ').encode('utf-8') \
-                          + str(global_x).encode('utf-8') + str(' ').encode('utf-8') \
+                #serString = str(self.classids[i]).encode('utf-8') + str(' ').encode('utf-8') \
+                #          + str(self.modCounter).encode('utf-8') + str(' ').encode('utf-8') \
+                #          + str(round(self.confidences[i],2)).encode('utf-8') +str(' ').encode('utf-8') \
+                #          + str(global_x).encode('utf-8') + str(' ').encode('utf-8') \
+                #          + str(global_y).encode('utf-8') + str(' ').encode('utf-8') \
+                #          + str('\n').encode('utf-8')
+                serString = str(global_x).encode('utf-8') + str(' ').encode('utf-8') \
                           + str(global_y).encode('utf-8') + str(' ').encode('utf-8') \
                           + str('\n').encode('utf-8')
                 self.ser.write(serString)
-                #time.sleep(0.01)
                 #print(string)
-                #self.ser.write(b'\n')
                 #self.ser.flush()
                 #color = [int(c) for c in self.colors[self.classids[i]]] # for
                 #more classes
@@ -231,7 +232,7 @@ class ReaderSeriellTiny(QtCore.QObject):
         print("codec: " + str(cap.get(cv2.CAP_PROP_FOURCC)))
         framenumber = 1
         starttime = time.time()
-        while(cap.isOpened() and self.counter <=16): # and self.counter <=1
+        while(cap.isOpened() ): # and self.counter <=1
            # if framenumber % 2 == 0:
             framenumber = 1
             self.begin_time = time.time()
