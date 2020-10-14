@@ -1,15 +1,14 @@
 import sys
 import cv2
 import os, platform, time
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtCore, QtWidgets, uic
 from PyQt5.QtGui import QPixmap, QImage, QFont
-from PyQt5 import QtCore
-from signals import WorkerSignals
+
 
 from reader_parallel import ReaderParallel
 from reader_seriell import ReaderSeriell
 from reader_seriell_yolov4_tiny import ReaderSeriellTiny
-#from yolo import Yolo
+from reader_live import ReaderLive
 
 #Klasse die in das MainWindow schreiben darf
 class Window(QtWidgets.QMainWindow):
@@ -30,9 +29,10 @@ class Window(QtWidgets.QMainWindow):
         cvString = "OpenCV-Version: " + str(cv2.__version__ + "\n")
         self.console.setText(self.console.text() + cvString)
         
-        self.readerSeriell = ReaderSeriell(self)
-        self.readerParallel = ReaderParallel(self)
-        self.readerSeriellTiny = ReaderSeriellTiny(self)
+        #self.readerSeriell = ReaderSeriell(self)
+        #self.readerParallel = ReaderParallel(self)
+        #self.readerSeriellTiny = ReaderSeriellTiny(self)
+        self.readerLive = ReaderLive(self)
         self.lock = True
         self.mutexDislpay = QtCore.QMutex()
         self.mutexList = QtCore.QMutex()
@@ -51,6 +51,7 @@ class Window(QtWidgets.QMainWindow):
         self.actionload_video_parallel.triggered.connect(self.loadVideoParallel)
         self.actionload_video_seriell.triggered.connect(self.loadVideoSeriell)
         self.actionload_video_seriell_yolo_tiny.triggered.connect(self.loadVideoSeriellTiny)
+        self.actionload_HXC40.triggered.connect(self.loadLiveVideo)
         #self.pushButtonStartDetection.clicked.connect(self.startDetection)
 
     #def startDetection(self):
@@ -135,6 +136,11 @@ class Window(QtWidgets.QMainWindow):
     def loadVideoSeriellTiny(self):
         self.statusBar().showMessage("play video ...")
         self.readerSeriellTiny.getVideo()
+        self.statusBar().clearMessage()
+
+    def loadLiveVideo(self):
+        self.statusBar().showMessage("play video ...")
+        self.readerLive.getVideo()
         self.statusBar().clearMessage()
 
     #def autoscroll(self):

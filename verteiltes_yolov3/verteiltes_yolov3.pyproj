@@ -24,6 +24,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="functions.py" />
+    <Compile Include="siso_board.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="reader_live.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="reader_parallel.py">
       <SubType>Code</SubType>
     </Compile>

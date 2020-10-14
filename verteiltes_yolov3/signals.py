@@ -5,3 +5,4 @@ class WorkerSignals(QObject):
 
     output_signal = pyqtSignal(QImage)
     signal_detectionList = pyqtSignal(list)
+    live_image = pyqtSignal(QImage)

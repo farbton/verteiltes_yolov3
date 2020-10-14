@@ -235,7 +235,15 @@
     </property>
     <addaction name="separator"/>
    </widget>
+   <widget class="QMenu" name="menuLive">
+    <property name="title">
+     <string>Live</string>
+    </property>
+    <addaction name="actionload_HXC40"/>
+    <addaction name="actionWebcam"/>
+   </widget>
    <addaction name="menuDatei"/>
+   <addaction name="menuLive"/>
    <addaction name="menuView"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -267,6 +275,16 @@
   <action name="actionload_video_seriell_yolo_tiny">
    <property name="text">
     <string>load video seriell yolov4_tiny</string>
+   </property>
+  </action>
+  <action name="actionload_HXC40">
+   <property name="text">
+    <string>HXC40</string>
+   </property>
+  </action>
+  <action name="actionWebcam">
+   <property name="text">
+    <string>Webcam</string>
    </property>
   </action>
  </widget>
