@@ -11,7 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>verteiltes_yolov3</Name>
     <RootNamespace>verteiltes_yolov3</RootNamespace>
-    <InterpreterId>CondaEnv|CondaEnv|py3.6</InterpreterId>
+    <InterpreterId>Global|ContinuumAnalytics|Anaconda36-64</InterpreterId>
     <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -27,16 +27,16 @@
     <Compile Include="siso_board.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="reader_live.py">
+    <Compile Include="video_reader_live.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="reader_parallel.py">
+    <Compile Include="video_reader_parallel.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="reader_seriell.py">
+    <Compile Include="video_reader_serial.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="reader_seriell_yolov4_tiny.py">
+    <Compile Include="image_reader_serial_tiny.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="signals.py">
@@ -57,7 +57,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="CondaEnv|CondaEnv|py3.6" />
+    <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda36-64" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

@@ -5,26 +5,22 @@ import cv2
 import time
 import numpy as np
 import serial
-#from functions import FuncSerial
 import functions
+#from signals import WorkerSignals
 
-class ReaderSeriellTiny(QtCore.QObject):
+class VideoReaderSerial(QtCore.QObject):
     def __init__(self, mainWindow):
         QtCore.QObject.__init__(self)
         self.mainWindow = mainWindow
         #self.cfgFileName = "yolo/yolov3.cfg" 
         #self.weightsFile = "yolo/yolov3_512.weights" 
-        #self.cfgFileName = "yolo/yolov4-obj.cfg" 
-        #self.weightsFile = "yolo/yolov4-obj_best.weights"
-        self.cfgFileName = "yolo/yolov4-tiny-kirko.cfg" 
-        self.weightsFile = "yolo/yolov4-tiny-kirko_best.weights"
+        self.cfgFileName = "yolo/yolov4-obj.cfg" 
+        self.weightsFile = "yolo/yolov4-obj_best.weights"
         self.classesFile = "yolo/weevil.names"
-        self.ser = serial.Serial('COM4', 115200)
+        self.ser = serial.Serial('COM3', 9600)
         print("Serialname: " , self.ser.name)
-        time.sleep(2)
-        #self.ser.write('weevil hunter\'s eye \n'.encode('utf-8'))
-        self.ser.write(b'cls quad conf x y \n')
-        self.ser.flush()
+        self.ser.write(b'hello here is the weevil hunter\'s eye \n')
+        self.ser.write(b'class quadrant confidence x y \n')
         sString = "COM-Port: " + self.ser.name + "\n"
         self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
         strich = "========================================================\n"
@@ -137,21 +133,11 @@ class ReaderSeriellTiny(QtCore.QObject):
                 w, h = self.boxes[i][2], self.boxes[i][3]
                 global_x, global_y = functions.getGlobalCoordinates(self.modCounter, x, y)
                 string = ("{:3.2f}, {:4d}, {:4d}".format(self.confidences[i], global_x, global_y))
-                #serString = str(self.classids[i]).encode('utf-8') + str(' ').encode('utf-8') \
-                #          + str(self.modCounter).encode('utf-8') + str(' ').encode('utf-8') \
-                #          + str(round(self.confidences[i],2)).encode('utf-8') +str(' ').encode('utf-8') \
-                #          + str(global_x).encode('utf-8') + str(' ').encode('utf-8') \
-                #          + str(global_y).encode('utf-8') + str(' ').encode('utf-8') \
-                #          + str('\n').encode('utf-8')
-                serString = str(global_x).encode('utf-8') + str(' ').encode('utf-8') \
-                          + str(global_y).encode('utf-8') + str(' ').encode('utf-8') \
-                          + str('\n').encode('utf-8')
+                serString = str(self.classids[i]).encode('utf-8') + str(' ').encode('utf-8') + str(self.modCounter).encode('utf-8') + str(' ').encode('utf-8') + str(round(self.confidences[i],2)).encode('utf-8') + str(' ').encode('utf-8') + str(global_x).encode('utf-8') + str(' ').encode('utf-8') + str(global_y).encode('utf-8') + str('\n').encode('utf-8')
                 self.ser.write(serString)
-                #print(string)
-                #self.ser.flush()
                 #color = [int(c) for c in self.colors[self.classids[i]]] # for
                 #more classes
-                self.boxesString.append(string) 
+                self.boxesString.append(string)
                 cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
                 
         #end = time.time()
@@ -232,56 +218,56 @@ class ReaderSeriellTiny(QtCore.QObject):
         print("codec: " + str(cap.get(cv2.CAP_PROP_FOURCC)))
         framenumber = 1
         starttime = time.time()
-        while(cap.isOpened() ): # and self.counter <=1
-           # if framenumber % 2 == 0:
-            framenumber = 1
-            self.begin_time = time.time()
-            ret, self.frame = cap.read()
-            if ret == False:
-                break
-            #self.frameOneGray = cv2.cvtColor(self.frame,
-            #cv2.COLOR_RGB2GRAY)
-            run_start = time.time()
-            self.detectImage()   
-            run_end = time.time()
-            self.netTime = run_end - run_start
-            self.netTimeList.append(self.netTime)
-            #print("ReaderSeriell.detectImage(): " + str(run_end -
-            #run_start))
-            #string = "ReaderSeriell.detectImage(): " + str(round(run_end -
-            #run_start,4)) + "\n"
-            #self.mainWindow.console.setText(self.mainWindow.console.text()
-            #+ string)
-            #self.mainWindow.scrollArea.verticalScrollBar().setValue(self.mainWindow.scrollArea.verticalScrollBar().maximum())
-            #self.mainWindow.scrollArea.verticalScrollBar().setSliderDown(True)
-            #print(str(run_end - run_start))
-            # nvof = cv2.cuda_NvidiaOpticalFlow_1_0.create(2048, 2048, 5,
-            # False, False, False, 0)
-            #flow = nvof.calc(self.frameOneGray, self.frameTwoGray, None)
-            #flowUpSampled = nvof.upSampler(flow[0], 2048, 2048,
-            #nvof.getGridSize(), None)
-            #cv2.writeOpticalFlow('OpticalFlow.flo', flowUpSampled)
-            #nvof.collectGarbage()
-            self.counter += 1
-            QtWidgets.QApplication.processEvents()
-          # else:
-          #      ret, self.frameTwo = cap.read()
-          #      if ret == False:
-          #          break
+        while(cap.isOpened()): # and self.counter <=1
+            if framenumber % 5 == 0:
+                framenumber = 1
+                self.begin_time = time.time()
+                ret, self.frame = cap.read()
+                if ret == False:
+                    break
+                #self.frameOneGray = cv2.cvtColor(self.frame,
+                #cv2.COLOR_RGB2GRAY)
+                run_start = time.time()
+                self.detectImage()   
+                run_end = time.time()
+                self.netTime = run_end - run_start
+                self.netTimeList.append(self.netTime)
+                #print("ReaderSeriell.detectImage(): " + str(run_end -
+                #run_start))
+                #string = "ReaderSeriell.detectImage(): " + str(round(run_end -
+                #run_start,4)) + "\n"
+                #self.mainWindow.console.setText(self.mainWindow.console.text()
+                #+ string)
+                #self.mainWindow.scrollArea.verticalScrollBar().setValue(self.mainWindow.scrollArea.verticalScrollBar().maximum())
+                #self.mainWindow.scrollArea.verticalScrollBar().setSliderDown(True)
+                #print(str(run_end - run_start))
+               # nvof = cv2.cuda_NvidiaOpticalFlow_1_0.create(2048, 2048, 5,
+               # False, False, False, 0)
+                #flow = nvof.calc(self.frameOneGray, self.frameTwoGray, None)
+                #flowUpSampled = nvof.upSampler(flow[0], 2048, 2048,
+                #nvof.getGridSize(), None)
+                #cv2.writeOpticalFlow('OpticalFlow.flo', flowUpSampled)
+                #nvof.collectGarbage()
+                self.counter += 1
+                QtWidgets.QApplication.processEvents()
+            else:
+                ret, self.frameTwo = cap.read()
+                if ret == False:
+                    break
                 #self.frameTwoGray = cv2.cvtColor(self.frameTwo,
                 #cv2.COLOR_RGB2GRAY)
                 #self.display()
-          #      framenumber = framenumber + 1
+                framenumber = framenumber + 1
                 #print(str(framenumber))
             
         cap.release()
-        self.ser.write(b'end of hunt \n')
+        self.ser.write(b'end of the hunt \n')
         endtime = time.time()
-        #avgCyle = round(sum(self.oneCycleList[2:]) / len(self.oneCycleList[2:]),3)
-        #avgNetTime = round(sum(self.netTimeList[2:]) / len(self.netTimeList[2:]),3)
-        #print("(tinyV4)ser_avg_CycleTime: " + str(avgCyle) + " avg_TinyV4NetTime: " + str(avgNetTime))
+        avgCyle = round(sum(self.oneCycleList[2:]) / len(self.oneCycleList[2:]),3)
+        avgNetTime = round(sum(self.netTimeList[2:]) / len(self.netTimeList[2:]),3)
+        print("ser_avg_CycleTime: " + str(avgCyle) + " avg_NetTime: " + str(avgNetTime))
         print(str(endtime - starttime))
-        self.ser.close()
+        #self.ser.close()
 
     def getImage(self, filename):
         self.tile = cv2.imread(filename)

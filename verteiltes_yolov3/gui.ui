@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1520</width>
-    <height>908</height>
+    <width>1251</width>
+    <height>943</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -164,8 +164,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1460</width>
-            <height>105</height>
+            <width>1197</width>
+            <height>74</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -215,8 +215,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1520</width>
-     <height>21</height>
+     <width>1251</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatei">
@@ -224,6 +224,7 @@
      <string>Datei</string>
     </property>
     <addaction name="actionload_image"/>
+    <addaction name="actionload_image_512_pix"/>
     <addaction name="separator"/>
     <addaction name="actionload_video_parallel"/>
     <addaction name="actionload_video_seriell"/>
@@ -242,8 +243,17 @@
     <addaction name="actionload_HXC40"/>
     <addaction name="actionWebcam"/>
    </widget>
+   <widget class="QMenu" name="menuWeights">
+    <property name="title">
+     <string>Config</string>
+    </property>
+    <addaction name="actionload_weights"/>
+    <addaction name="actionload_cfg"/>
+    <addaction name="actionload_data"/>
+   </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuLive"/>
+   <addaction name="menuWeights"/>
    <addaction name="menuView"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
@@ -263,11 +273,17 @@
    </property>
   </action>
   <action name="actionload_video_parallel">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>load video parallel</string>
    </property>
   </action>
   <action name="actionload_video_seriell">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>load video seriell</string>
    </property>
@@ -285,6 +301,26 @@
   <action name="actionWebcam">
    <property name="text">
     <string>Webcam</string>
+   </property>
+  </action>
+  <action name="actionload_weights">
+   <property name="text">
+    <string>load .weights</string>
+   </property>
+  </action>
+  <action name="actionload_cfg">
+   <property name="text">
+    <string>load .cfg</string>
+   </property>
+  </action>
+  <action name="actionload_data">
+   <property name="text">
+    <string>load .data</string>
+   </property>
+  </action>
+  <action name="actionload_image_512_pix">
+   <property name="text">
+    <string>load image 512 pix</string>
    </property>
   </action>
  </widget>

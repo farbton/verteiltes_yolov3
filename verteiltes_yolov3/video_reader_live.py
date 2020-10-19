@@ -22,6 +22,7 @@ class ReaderLive(QtCore.QObject):
         self.weightsFile = "yolo/yolov4-tiny-kirko_best.weights"
         self.classesFile = "yolo/weevil.names"
         self.ser = serial.Serial('COM4', 115200)
+        print("self.ser: " , self.ser)
         print("Serialname: " , self.ser.name)
         time.sleep(2)
         #self.ser.write('weevil hunter\'s eye \n'.encode('utf-8'))
