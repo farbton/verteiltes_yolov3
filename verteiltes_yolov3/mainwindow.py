@@ -47,10 +47,7 @@ class Window(QtWidgets.QMainWindow):
         self.videoFileName = "videos/12-12-2019 MONO 30fps 11_51_25_Testvideo_10s.avi" 
         vnString = ".avi: " + str(self.videoFileName.rpartition("/")[2]) + "\n" + "\n"
         self.console.setText(self.console.text() + vnString)
-
-        #self.readerSeriell = ReaderSeriell(self)
-        #self.readerParallel = ReaderParallel(self)
-        
+       
         #self.readerLive = ReaderLive(self)
         self.lock = True
         self.mutexDislpay = QtCore.QMutex()
@@ -63,10 +60,12 @@ class Window(QtWidgets.QMainWindow):
         #self.signals = WorkerSignals()
         #self.signals.output_signal.connect(self.display)
         #self.signals.signal_detectionList.connect(self.writeList)
+        
 
     def start(self):        
-        self.refresh_button.clicked.connect(self.refreshConsoleAndList)
+        self.pushButton_clear.clicked.connect(self.refreshConsoleAndList)
         self.pushButton_detectVideo.clicked.connect(self.loadVideoSerial)
+        self.pushButton_detectImage.clicked.connect(self.startDetection)
         self.actionload_image.triggered.connect(self.loadImageName2048)
         self.actionload_image_512_pix.triggered.connect(self.loadImageName512)
         self.actionload_video_parallel.triggered.connect(self.loadVideoParallel)
@@ -75,7 +74,6 @@ class Window(QtWidgets.QMainWindow):
         self.actionload_cfg.triggered.connect(self.loadCfgFile)
         self.actionload_weights.triggered.connect(self.loadWeightsFile)
         self.actionload_data.triggered.connect(self.loadDataFile)
-        self.pushButtonStartDetection.clicked.connect(self.startDetection)
 
     def loadWeightsFile(self):
         (filename, selectedFilter) = QtWidgets.QFileDialog.getOpenFileName(None, 'Select a .weights:', 'C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/yolo', "*.weights")
@@ -163,7 +161,7 @@ class Window(QtWidgets.QMainWindow):
         self.addSceneToPlayer()
         string = "loaded file: " + str(filename.rpartition("/")[2] + "\n")
         self.console.setText(self.console.text() + string)
-        string = "Auflösung: " + str(aufloesung) + "\n"
+        string = "solution: " + str(aufloesung) + "\n"
         self.console.setText(self.console.text() + string)
         self.autoscroll()
 
@@ -177,9 +175,9 @@ class Window(QtWidgets.QMainWindow):
         self.resizePixmap()
         self.pixmapSetScene()
         self.addSceneToPlayer()
-        string = "loaded file: " + str(filename + "\n")
+        string = ".jpg: " + str(self.imageName.rpartition("/")[2] + "\n")
         self.console.setText(self.console.text() + string)
-        string = "Auflösung: " + str(aufloesung) + "\n"
+        string = "solution: " + str(aufloesung) + "\n"
         self.console.setText(self.console.text() + string)
         self.autoscroll()
 
@@ -197,7 +195,7 @@ class Window(QtWidgets.QMainWindow):
         #cv2.imshow(" k " , self.detectedImage512)
         string = self.console.text() + "{:2f} s \n".format(end - start)
         self.console.setText(string)
-        string = "Detektionen: " + str(detections) + "\n"
+        string = "detections: " + str(detections) + "\n" +"\n"
         self.console.setText(self.console.text() + string)
         if(self.detectedImage.shape[0] == 512):
             self.convertCv2ToQImage512()
@@ -217,9 +215,9 @@ class Window(QtWidgets.QMainWindow):
         self.statusBar().clearMessage()    
 
     def loadVideoSerial(self):
-        readerSerial = VideoReaderSerial(self, self.weightsFileName, self.cfgFileName, self.classesFileName)
+        videoReaderSerial = VideoReaderSerial(self, self.weightsFileName, self.cfgFileName, self.classesFileName)
         self.statusBar().showMessage("play video ...")
-        readerSerial.getVideo(self.videoFileName)
+        videoReaderSerial.getVideo(self.videoFileName)
         self.statusBar().clearMessage()
 
     def loadLiveVideo(self):

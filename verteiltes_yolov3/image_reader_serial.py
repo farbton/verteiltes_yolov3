@@ -25,11 +25,11 @@ class ImageReaderSerial(QtCore.QObject):
             sString = "COM-Port: " + self.ser.name + "\n"
             self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
         except:
-            sString = "Kein COM-Port verfügbar \n"
+            sString = "kein COM-Port verfügbar \n"
             self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
 
-        strich = "========================================================\n"
-        self.mainWindow.console.setText(self.mainWindow.console.text() + strich)
+        #strich = "========================================================\n"
+        #self.mainWindow.console.setText(self.mainWindow.console.text() + strich)
 
         self.conf_threshhold = 0.9 
         self.nms_treshold = 0.5

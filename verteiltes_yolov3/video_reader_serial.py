@@ -18,13 +18,12 @@ class VideoReaderSerial(QtCore.QObject):
 
         try:
             self.ser = serial.Serial('COM3', 9600)
-            print("Serialname: " , self.ser.name)
             self.ser.write(b'hello here is the weevil hunter\'s eye \n')
             self.ser.write(b'class quadrant confidence x y \n')
             sString = "COM-Port: " + self.ser.name + "\n"
             self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
         except:
-            sString = "Kein COM-Port verfügbar \n"
+            sString = "no COM-Port avalible \n"
             self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
 
         strich = "========================================================\n"
@@ -196,15 +195,20 @@ class VideoReaderSerial(QtCore.QObject):
         self.mainWindow.listWidget.addItems(self.boxesString)
 
     def getVideo(self, videoFileName):
-        #print("load video ...")
-        
         cap = cv2.VideoCapture(videoFileName)
-        print("VideoCaptureBackendName: " + cap.getBackendName())
-        print("fps: " + str(cap.get(cv2.CAP_PROP_FPS)))
-        print("codec: " + str(cap.get(cv2.CAP_PROP_FOURCC)))
+        nString = "VideoCaptureBackendName: " + cap.getBackendName() + "\n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + nString)
+
+        fpsString = "fps: " + str(cap.get(cv2.CAP_PROP_FPS)) + "\n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + fpsString)
+
+        cString = "Codec: " + str(cap.get(cv2.CAP_PROP_FOURCC)) + "\n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + cString)
+
+        self.mainWindow.autoscroll()
         framenumber = 1
         starttime = time.time()
-        while(cap.isOpened()): # and self.counter <=1
+        while(cap.isOpened() and not self.mainWindow.pushButton_stop.isChecked()): # and self.counter <=1
             if framenumber % 5 == 0:
                 framenumber = 1
                 self.begin_time = time.time()
@@ -250,11 +254,18 @@ class VideoReaderSerial(QtCore.QObject):
         self.ser.write(b'end of the hunt \n')
         endtime = time.time()
         avgCyle = round(sum(self.oneCycleList[2:]) / len(self.oneCycleList[2:]),3)
+        acString = "avg_cycle_time: " + str(avgCyle) + " s \n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + acString)
+        
         avgNetTime = round(sum(self.netTimeList[2:]) / len(self.netTimeList[2:]),3)
-        print("ser_avg_CycleTime: " + str(avgCyle) + " avg_NetTime: " + str(avgNetTime))
-        print(str(endtime - starttime))
+        antString = "avg_net_time: " + str(avgNetTime) + " s \n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + antString)
+
+        wholeTime = round((endtime - starttime),3)
+        wtString = "whole video time: " + str(wholeTime) + " s \n \n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + wtString)
         #self.ser.close()
 
-    def autoscroll(self):
-        QtWidgets.QApplication.processEvents()
-        self.mainWindow.scrollArea.verticalScrollBar().setValue(self.mainWindow.scrollArea.verticalScrollBar().maximum())
+    #def autoscroll(self):
+    #    QtWidgets.QApplication.processEvents()
+    #    self.mainWindow.scrollArea.verticalScrollBar().setValue(self.mainWindow.scrollArea.verticalScrollBar().maximum())
