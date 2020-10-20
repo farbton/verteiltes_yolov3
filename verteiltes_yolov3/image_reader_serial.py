@@ -7,7 +7,7 @@ import numpy as np
 import serial
 import functions
 
-class ImageReaderSerialTiny(QtCore.QObject):
+class ImageReaderSerial(QtCore.QObject):
     def __init__(self, mainWindow, cfgFileName, weightsFileName, classesFileName):
         QtCore.QObject.__init__(self)
         self.mainWindow = mainWindow
@@ -30,8 +30,7 @@ class ImageReaderSerialTiny(QtCore.QObject):
 
         strich = "========================================================\n"
         self.mainWindow.console.setText(self.mainWindow.console.text() + strich)
-        #self.imageHeight = 512
-        #self.imageWidth = 512
+
         self.conf_threshhold = 0.9 
         self.nms_treshold = 0.5
         self.counter = 1
@@ -48,8 +47,7 @@ class ImageReaderSerialTiny(QtCore.QObject):
             self.classes = f.read().rstrip('\n').split('\n')
 
     def readNet(self):
-        #print("Reader.readNet()")
-        string = self.mainWindow.console.text() + "reader_seriell_tiny readNet() ...  "
+        string = self.mainWindow.console.text() + "reader_seriell readNet() ...  "
         self.mainWindow.console.setText(string)
         start = time.time()
         self.net = cv2.dnn.readNetFromDarknet(self.cfgFileName,self.weightsFileName)

@@ -4,12 +4,12 @@ import os
 import platform
 import time
 from PyQt5 import QtCore, QtWidgets, uic
-from PyQt5.QtGui import QPixmap, QImage, QFont
+from PyQt5.QtGui import QPixmap, QImage, QFont, QIcon
 
 
 from video_reader_parallel import ReaderParallel
 from video_reader_serial import VideoReaderSerial
-from image_reader_serial_tiny import ImageReaderSerialTiny
+from image_reader_serial import ImageReaderSerial
 from video_reader_live import ReaderLive
 
 #Klasse die in das MainWindow schreiben darf
@@ -20,25 +20,34 @@ class Window(QtWidgets.QMainWindow):
         uic.loadUi("gui.ui", self)
         self.console.setFont(QFont('Times', 9))
         self.setWindowTitle("Viewer for Yolov")
-        self.imageName = "images/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros0.jpg"
-        #self.imageName512 = "images_512/12-12-2019 MONO 30fps 11_33_48_Kaefer
-        #auf Korn_4200mikros840_-50_rot270sub3.jpg"
-        self.imageName512 = ""
-        self.cfgFileName = "yolo/yolov4-tiny-kirko.cfg"
-        self.weightsFileName = "yolo/yolov4-tiny-kirko_best.weights"
-        self.classesFileName = "yolo/weevil.names"
-        #self.cfgFileName = "" 
-        #self.weightsFileName = ""
-        #self.classesFileName = ""
-
-       #print("Python-Version: " + str(platform.python_version()))
+        self.setWindowIcon(QIcon("icon.png"))
+        
         pString = "Python-Version: " + str(platform.python_version() + "\n")
         self.console.setText(self.console.text() + pString)
         
-        #print("OpenCV-Version: " + str(cv2.__version__))
-        cvString = "OpenCV-Version: " + str(cv2.__version__ + "\n")
+        cvString = "OpenCV-Version: " + str(cv2.__version__ + "\n" + "\n")
         self.console.setText(self.console.text() + cvString)
-        
+
+        self.imageName = "images_512/12-12-2019 MONO 30fps 11_33_48_Kaefer auf Korn_4200mikros840_-50_rot270sub3.jpg"
+        iString = ".jpg: " + str(self.imageName.rpartition("/")[2]) + "\n"
+        self.console.setText(self.console.text() + iString)
+                        
+        self.weightsFileName = "yolo/yolov4-tiny-kirko_best.weights"
+        wfString = ".weights: " + str(self.weightsFileName.rpartition("/")[2]) + "\n"
+        self.console.setText(self.console.text() + wfString)
+
+        self.cfgFileName = "yolo/yolov4-tiny-kirko.cfg"
+        cfgString = ".cfg: " + str(self.cfgFileName.rpartition("/")[2]) + "\n"
+        self.console.setText(self.console.text() + cfgString)
+
+        self.classesFileName = "yolo/weevil.names"
+        dataString = ".names: " + str(self.classesFileName.rpartition("/")[2]) + "\n"
+        self.console.setText(self.console.text() + dataString)
+
+        self.videoFileName = "videos/12-12-2019 MONO 30fps 11_51_25_Testvideo_10s.avi" 
+        vnString = ".avi: " + str(self.videoFileName.rpartition("/")[2]) + "\n" + "\n"
+        self.console.setText(self.console.text() + vnString)
+
         #self.readerSeriell = ReaderSeriell(self)
         #self.readerParallel = ReaderParallel(self)
         
@@ -56,12 +65,12 @@ class Window(QtWidgets.QMainWindow):
         #self.signals.signal_detectionList.connect(self.writeList)
 
     def start(self):        
-        #self.refresh_button.clicked.connect(self.label_write)
+        self.refresh_button.clicked.connect(self.refreshConsoleAndList)
+        self.pushButton_detectVideo.clicked.connect(self.loadVideoSerial)
         self.actionload_image.triggered.connect(self.loadImageName2048)
         self.actionload_image_512_pix.triggered.connect(self.loadImageName512)
         self.actionload_video_parallel.triggered.connect(self.loadVideoParallel)
-        self.actionload_video_seriell.triggered.connect(self.loadVideoSeriell)
-        self.actionload_video_seriell_yolo_tiny.triggered.connect(self.loadVideoSeriellTiny)
+        self.actionload_video_serial.triggered.connect(self.loadVideoFile)
         self.actionload_HXC40.triggered.connect(self.loadLiveVideo)
         self.actionload_cfg.triggered.connect(self.loadCfgFile)
         self.actionload_weights.triggered.connect(self.loadWeightsFile)
@@ -71,52 +80,44 @@ class Window(QtWidgets.QMainWindow):
     def loadWeightsFile(self):
         (filename, selectedFilter) = QtWidgets.QFileDialog.getOpenFileName(None, 'Select a .weights:', 'C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/yolo', "*.weights")
         self.weightsFileName = filename
-        string = "weightsFile: " + str(self.weightsFileName) + "\n"
+        string = "weightsFile: " + str(filename.rpartition("/")[2]) + "\n"
         self.console.setText(self.console.text() + string)
         self.autoscroll()
 
     def loadCfgFile(self):
         (filename, selectedFilter) = QtWidgets.QFileDialog.getOpenFileName(None, 'Select a .cfg:', 'C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/yolo', "*.cfg")
         self.cfgFileName = filename
-        string = "cfgFile: " + str(self.cfgFileName) + "\n"
+        string = "cfgFile: " + str(filename.rpartition("/")[2]) + "\n"
         self.console.setText(self.console.text() + string)
         self.autoscroll()
 
     def loadDataFile(self):
         (filename, selectedFilter) = QtWidgets.QFileDialog.getOpenFileName(None, 'Select a .names:', 'C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/yolo', "*.names")
         self.classesFileName = filename
-        string = "dataFile: " + str(self.classesFileName) + "\n"
+        string = "dataFile: " + str(filename.rpartition("/")[2]) + "\n"
+        self.console.setText(self.console.text() + string)
+        self.autoscroll()
+
+    def loadVideoFile(self):
+        (filename, selectedFilter) = QtWidgets.QFileDialog.getOpenFileName(None, 'Select a .avi:', 'C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/videos', "*.avi")
+        self.videoFileName = filename
+        string = "videoFile: " + str(filename.rpartition("/")[2]) + "\n"
         self.console.setText(self.console.text() + string)
         self.autoscroll()
 
     def startDetection(self):
         if(self.imageName != ""):
             self.statusBar().showMessage("detection ...  ")
-            self.console.setText(self.console.text() + "start detection ...  \n")
+            self.console.setText(self.console.text() + "\nstart detection ...  \n")
             self.autoscroll()
-            #self.console.repaint()
             self.loadImage()
         else:
             self.console.setText(self.console.text() + "Bitte Image auswählen ...  \n")
-            self.autoscroll()
+            self.autoscroll()  
 
-    #def detectImage(self):
-    #    self.detectedImage = self.yolo.detectImage(self.image)
-    #    self.convertCv2ToQImage()
-    #    #cv2.imshow("test", self.detectedImage)
-    #    self.setPlayerHeightWidth()
-    #    self.qimageToPixmap()
-    #    self.resizePixmap()
-    #    self.pixmapSetScene()
-    #    self.addSceneToPlayer()
-    #    self.statusBar().clearMessage()
-    #    self.console.setText(self.console.text() + "ready ...  \n")
-    #    self.console.repaint()
-    #    self.autoscroll()
-    #    self.lock = False
-
-    #def label_write(self):
-    #    self.label.setText("hallo")
+    def refreshConsoleAndList(self):
+        self.console.clear()
+        self.listWidget.clear()
 
     def writeList(self, list):
         #self.mutexList.lock()
@@ -150,27 +151,6 @@ class Window(QtWidgets.QMainWindow):
     def addSceneToPlayer(self):
         self.player.setScene(self.scene)
 
-    def loadImage(self):
-        #TODO automatisches skalieren einbauen
-        self.statusBar().showMessage("detectImage ...")
-        self.statusBar().repaint()
-        self.setPlayerHeightWidth()
-        string = self.console.text() + "detectImage ...  "
-        self.console.setText(string)
-        start = time.time()
-        self.detectedImage = self.readerSeriell.getImage(self.imageName512)
-        end = time.time()
-        string = self.console.text() + "{:2f} s \n".format(end - start)
-        self.console.setText(string)
-        self.autoscroll()
-        self.convertCv2ToQImage()
-        self.qimageToPixmap()
-        self.resizePixmap()
-        self.pixmapSetScene()
-        self.addSceneToPlayer()
-        self.lock = False
-        self.statusBar().clearMessage()
-
     def loadImageName512(self):
         (filename, selectedFilter) = QtWidgets.QFileDialog.getOpenFileName(None, 'Select a image:', 'C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/images_512')
         self.imageName = filename
@@ -181,7 +161,7 @@ class Window(QtWidgets.QMainWindow):
         self.resizePixmap()
         self.pixmapSetScene()
         self.addSceneToPlayer()
-        string = "loaded file: " + str(filename + "\n")
+        string = "loaded file: " + str(filename.rpartition("/")[2] + "\n")
         self.console.setText(self.console.text() + string)
         string = "Auflösung: " + str(aufloesung) + "\n"
         self.console.setText(self.console.text() + string)
@@ -204,20 +184,20 @@ class Window(QtWidgets.QMainWindow):
         self.autoscroll()
 
     def loadImage(self):       
-        imageReaderSerialTiny = ImageReaderSerialTiny(self, self.cfgFileName, self.weightsFileName, self.classesFileName)
+        imageReaderSerial = ImageReaderSerial(self, self.cfgFileName, self.weightsFileName, self.classesFileName)
         self.statusBar().showMessage("load image ...")
         self.statusBar().repaint()
         self.setPlayerHeightWidth()
         self.setPlayerHeightWidth()
-        string = self.console.text() + "detectImage_tiny ...  "
+        string = self.console.text() + "detectImage ...  "
         self.console.setText(string)
         start = time.time()
-        self.detectedImage, detections = imageReaderSerialTiny.getImage(self.imageName)
+        self.detectedImage, detections = imageReaderSerial.getImage(self.imageName)
         end = time.time()
         #cv2.imshow(" k " , self.detectedImage512)
         string = self.console.text() + "{:2f} s \n".format(end - start)
         self.console.setText(string)
-        string = "Detektionen: " + str(detections)
+        string = "Detektionen: " + str(detections) + "\n"
         self.console.setText(self.console.text() + string)
         if(self.detectedImage.shape[0] == 512):
             self.convertCv2ToQImage512()
@@ -234,16 +214,12 @@ class Window(QtWidgets.QMainWindow):
     def loadVideoParallel(self):
         self.statusBar().showMessage("play video ...")
         self.readerParallel.getVideo()
-        self.statusBar().clearMessage()
+        self.statusBar().clearMessage()    
 
-    def loadVideoSeriell(self):
+    def loadVideoSerial(self):
+        readerSerial = VideoReaderSerial(self, self.weightsFileName, self.cfgFileName, self.classesFileName)
         self.statusBar().showMessage("play video ...")
-        self.readerSeriell.getVideo()
-        self.statusBar().clearMessage()
-
-    def loadVideoSeriellTiny(self):
-        self.statusBar().showMessage("play video ...")
-        self.readerSeriellTiny.getVideo()
+        readerSerial.getVideo(self.videoFileName)
         self.statusBar().clearMessage()
 
     def loadLiveVideo(self):
@@ -256,7 +232,6 @@ class Window(QtWidgets.QMainWindow):
         QtWidgets.QApplication.processEvents()
         self.scrollArea.verticalScrollBar().setValue(self.scrollArea.verticalScrollBar().maximum())
         
-
     def resizeEvent(self, event):
         if self.lock == False:
             #print("Event")

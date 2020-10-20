@@ -9,22 +9,27 @@ import functions
 #from signals import WorkerSignals
 
 class VideoReaderSerial(QtCore.QObject):
-    def __init__(self, mainWindow):
+    def __init__(self, mainWindow, weightsFileName, cfgFileName, classesFileName):
         QtCore.QObject.__init__(self)
         self.mainWindow = mainWindow
-        #self.cfgFileName = "yolo/yolov3.cfg" 
-        #self.weightsFile = "yolo/yolov3_512.weights" 
-        self.cfgFileName = "yolo/yolov4-obj.cfg" 
-        self.weightsFile = "yolo/yolov4-obj_best.weights"
-        self.classesFile = "yolo/weevil.names"
-        self.ser = serial.Serial('COM3', 9600)
-        print("Serialname: " , self.ser.name)
-        self.ser.write(b'hello here is the weevil hunter\'s eye \n')
-        self.ser.write(b'class quadrant confidence x y \n')
-        sString = "COM-Port: " + self.ser.name + "\n"
-        self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
+        self.weightsFileName = weightsFileName
+        self.cfgFileName = cfgFileName
+        self.classesFileName = classesFileName
+
+        try:
+            self.ser = serial.Serial('COM3', 9600)
+            print("Serialname: " , self.ser.name)
+            self.ser.write(b'hello here is the weevil hunter\'s eye \n')
+            self.ser.write(b'class quadrant confidence x y \n')
+            sString = "COM-Port: " + self.ser.name + "\n"
+            self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
+        except:
+            sString = "Kein COM-Port verfügbar \n"
+            self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
+
         strich = "========================================================\n"
         self.mainWindow.console.setText(self.mainWindow.console.text() + strich)
+
         self.imageHeight = 512
         self.imageWidth = 512
         self.conf_threshhold = 0.9 
@@ -39,7 +44,7 @@ class VideoReaderSerial(QtCore.QObject):
 
     def getClassesNames(self):        
         self.classes = None
-        with open(self.classesFile, 'rt') as f:
+        with open(self.classesFileName, 'rt') as f:
             self.classes = f.read().rstrip('\n').split('\n')
 
     def readNet(self):
@@ -47,7 +52,7 @@ class VideoReaderSerial(QtCore.QObject):
         string = self.mainWindow.console.text() + "reader_seriell read net ...  "
         self.mainWindow.console.setText(string)
         start = time.time()
-        self.net = cv2.dnn.readNetFromDarknet(self.cfgFileName,self.weightsFile)
+        self.net = cv2.dnn.readNetFromDarknet(self.cfgFileName,self.weightsFileName)
         self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
         self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
         end = time.time()
@@ -55,34 +60,20 @@ class VideoReaderSerial(QtCore.QObject):
         self.mainWindow.console.setText(string)
 
     def setLayerNames(self):
-        #print("Reader.setLayerNames()")
         self.layerNames = self.net.getLayerNames()
         self.layerNames = [self.layerNames[i[0] - 1] for i in self.net.getUnconnectedOutLayers()]
-        #print(self.layerNames)
 
     def modCount(self):
         self.modCounter = self.counter % 16
    
     def createBlob(self):
-        #print("ReaderSeriell.createBlob()")
-        #start = time.time()
         self.blob = cv2.dnn.blobFromImage(self.tile, 1 / 255, (self.imageHeight, self.imageWidth), [0,0,0], 1, crop=False)
-        #end = time.time()
-        #print("createBlob(): " + str(end - start))
 
     def setNetInput(self):
-        #print("ReaderSeriell.setNetInput()")
-        #start = time.time()
         self.net.setInput(self.blob)        
-        #end = time.time()
-        #print("setNetInput(): " + str(end - start))
 
     def getOutput(self):
-        #print("ReaderSeriell.getOutput()")
-        #start = time.time()
         self.outs = self.net.forward(self.layerNames)
-        #end = time.time()
-        #print("getOutput(): " + str(end - start))
 
     def generateBoxes_confidences_classids(self):
         #print("ReaderSeriell.generateBoxes_confidence_classids()")
@@ -204,15 +195,10 @@ class VideoReaderSerial(QtCore.QObject):
         self.mainWindow.listWidget.clear()
         self.mainWindow.listWidget.addItems(self.boxesString)
 
-    def getVideo(self):
+    def getVideo(self, videoFileName):
         #print("load video ...")
-        videoName = "videos/12-12-2019 MONO 30fps 11_51_25_Testvideo_10s.avi" 
-        #videoName = "videos/12-12-2019 MONO 30fps 11_49_58_Kaefer auf
-        #Korn_4800mikros.avi"
-        string = self.mainWindow.console.text() + "load video file ..." + videoName + "\n"
-        self.mainWindow.console.setText(string)
         
-        cap = cv2.VideoCapture(videoName)
+        cap = cv2.VideoCapture(videoFileName)
         print("VideoCaptureBackendName: " + cap.getBackendName())
         print("fps: " + str(cap.get(cv2.CAP_PROP_FPS)))
         print("codec: " + str(cap.get(cv2.CAP_PROP_FOURCC)))
@@ -249,7 +235,7 @@ class VideoReaderSerial(QtCore.QObject):
                 #cv2.writeOpticalFlow('OpticalFlow.flo', flowUpSampled)
                 #nvof.collectGarbage()
                 self.counter += 1
-                QtWidgets.QApplication.processEvents()
+                #QtWidgets.QApplication.processEvents()
             else:
                 ret, self.frameTwo = cap.read()
                 if ret == False:
@@ -269,13 +255,6 @@ class VideoReaderSerial(QtCore.QObject):
         print(str(endtime - starttime))
         #self.ser.close()
 
-    def getImage(self, filename):
-        self.tile = cv2.imread(filename)
-        self.createBlob()
-        self.setNetInput()
-        self.getOutput()
-        self.generateBoxes_confidences_classids()
-        self.nonMaximaSupress()
-        self.drawLabelsAndBoxesImage()
-        self.writeList()
-        return self.tile
+    def autoscroll(self):
+        QtWidgets.QApplication.processEvents()
+        self.mainWindow.scrollArea.verticalScrollBar().setValue(self.mainWindow.scrollArea.verticalScrollBar().maximum())

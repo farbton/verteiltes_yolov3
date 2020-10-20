@@ -36,7 +36,7 @@
     <Compile Include="video_reader_serial.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="image_reader_serial_tiny.py">
+    <Compile Include="image_reader_serial.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="signals.py">
