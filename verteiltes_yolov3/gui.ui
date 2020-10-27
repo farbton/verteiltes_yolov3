@@ -236,9 +236,10 @@
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>View</string>
+     <string>Info</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="actionload_video_info"/>
    </widget>
    <widget class="QMenu" name="menuLive">
     <property name="title">
@@ -325,6 +326,11 @@
   <action name="actionload_image_512_pix">
    <property name="text">
     <string>load image 512 pix</string>
+   </property>
+  </action>
+  <action name="actionload_video_info">
+   <property name="text">
+    <string>video info</string>
    </property>
   </action>
  </widget>

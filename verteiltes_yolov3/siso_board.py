@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from PyQt5.QtGui import QImage
+from PyQt5.QtGui import QImage, QPixmap
 import sys
 import time
 import SiSoPyInterface as siso
@@ -201,7 +201,7 @@ class siso_board(QtCore.QThread):
         iter, err = siso.Fg_getAppletIterator(0, siso.FG_AIS_FILESYSTEM, siso.FG_AF_IS_LOADABLE)
         item = siso.Fg_getAppletIteratorItem(iter, 14)
         applet = siso.Fg_getAppletStringProperty(item, siso.FG_AP_STRING_APPLET_NAME)
-        #applet = Acq_FullAreaGray8 #self.selectAppletDialog(boardId)
+        #applet = self.selectAppletDialog(boardId)
         print(applet)
         global_imgNr = -1
 
@@ -266,8 +266,7 @@ class siso_board(QtCore.QThread):
             print('Hap File =', oString)
 
         # create a display window
-        #dispId0 = siso.CreateDisplay(8 * bytePerSample * samplePerPixel,
-        #width, height)
+        #dispId0 = siso.CreateDisplay(8 * bytePerSample * samplePerPixel, width, height)
         #siso.SetBufferWidth(dispId0, width, height)
 
         #Define FgApcControl instance to handle the callback
@@ -301,26 +300,27 @@ class siso_board(QtCore.QThread):
         counter = 1
         while(counter < 10):
             bufNr = siso.Fg_getImageEx(fg, siso.SEL_NEXT_IMAGE, counter, camPort, 2, memHandle)
-            print("bufNr: " + str(bufNr))
+            #print("bufNr: " + str(bufNr))
             ulp_buf = siso.Fg_getImagePtrEx(fg, bufNr, camPort, memHandle)
-            print("str(ulp_buf): " + str(ulp_buf))
+            #print("str(ulp_buf): " + str(ulp_buf))
             #print("str(id(ulp_buf)): " + str(id(ulp_buf)))
             #print("str(hex(id(ulp_buf))): " + str(hex(id(ulp_buf))))
             #print("str(memHandle): " , str(memHandle))
             #print("str(id(memHandle)): " + str(id(memHandle)))
             #print("mat-type: ", str(m.dtype))
             #m[0:4] = ulp_buf
-            m = siso.getArrayFrom(ulp_buf, 2048, 2048)
+            nparray = siso.getArrayFrom(ulp_buf, 2048, 2048)
+            #siso.DrawBuffer(dispId0, ulp_buf, bufNr,"name")
             #ctypes.memmove(id(m), id(memHandle), (2 * 2))
             #for i in range(4):
             #    m[i] = id(ulp_buf) + i
-            #print(m)
-            #cv2.imshow("test", (m / 255))
+            #print(m.dtype)
+            #cv2.imshow("test", m )
             #cv2.waitKey(0)
             #print(mat / 255)
-            #print(mat)
-            qimage = QImage(m, 2048, 2048, QImage.Format_Grayscale8)
-            self.signals.live_image.emit(qimage)
+            #print(m.shape)
+            #qimage = QImage(m, 2048, 2048, QImage.Format_Grayscale8)
+            self.signals.live_image.emit(nparray)
             counter += 1
             siso.Fg_setStatusEx(fg, siso.FG_UNBLOCK, bufNr, camPort, memHandle);
             #self.yoloThread.signals.output_signal.connect(self.display)
@@ -330,3 +330,4 @@ class siso_board(QtCore.QThread):
 
 
         #siso.CloseDisplay(dispId0)
+        

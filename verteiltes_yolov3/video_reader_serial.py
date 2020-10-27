@@ -15,6 +15,7 @@ class VideoReaderSerial(QtCore.QObject):
         self.weightsFileName = weightsFileName
         self.cfgFileName = cfgFileName
         self.classesFileName = classesFileName
+        self.detections = []
 
         try:
             self.ser = serial.Serial('COM3', 9600)
@@ -26,8 +27,7 @@ class VideoReaderSerial(QtCore.QObject):
             sString = "no COM-Port avalible \n"
             self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
 
-        strich = "========================================================\n"
-        self.mainWindow.console.setText(self.mainWindow.console.text() + strich)
+        
 
         self.imageHeight = 512
         self.imageWidth = 512
@@ -64,6 +64,7 @@ class VideoReaderSerial(QtCore.QObject):
 
     def modCount(self):
         self.modCounter = self.counter % 16
+        
    
     def createBlob(self):
         self.blob = cv2.dnn.blobFromImage(self.tile, 1 / 255, (self.imageHeight, self.imageWidth), [0,0,0], 1, crop=False)
@@ -129,32 +130,7 @@ class VideoReaderSerial(QtCore.QObject):
                 #more classes
                 self.boxesString.append(string)
                 cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
-                
-        #end = time.time()
-        #print("drawLabels...() " + str(end - start))
-
-    def drawLabelsAndBoxesImage(self):
-        #print("Yolo.drawLabelsAndBoxes()")
-        self.boxesString = []
-        #start = time.time()
-        if len(self.idxs) > 0:
-            for i in self.idxs.flatten():
-                x, y = self.boxes[i][0], self.boxes[i][1]
-                w, h = self.boxes[i][2], self.boxes[i][3]
-                string = ("{:3.2f}, {:4d}, {:4d}".format(self.confidences[i], x, y))
-                #serString = str(self.classids[i]).encode('utf-8') + str('
-                #').encode('utf-8') + str(self.modCounter).encode('utf-8') +
-                #str(' ').encode('utf-8') +
-                #str(round(self.confidences[i],2)).encode('utf-8') + str('
-                #').encode('utf-8') + str(global_x).encode('utf-8') + str('
-                #').encode('utf-8') + str(global_y).encode('utf-8') +
-                #str('\n').encode('utf-8')
-                #self.ser.write(serString)
-                self.boxesString.append(string)
-                #print(x, y)
-                #color = [int(c) for c in self.colors[self.classids[i]]] # for
-                #more classes
-                cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
+                self.detections.append(len(self.idxs))
                 
         #end = time.time()
         #print("drawLabels...() " + str(end - start))
@@ -163,6 +139,8 @@ class VideoReaderSerial(QtCore.QObject):
         #print("Yolo.detectImage()")
         self.modCount()
         self.tile = functions.getTile(self.modCounter, self.frame)
+        print("videoReaderSerial.tile.shape: ", self.tile.shape )
+        print("videoReaderSerialtile.shape: ",self.tile.dtype)
         self.createBlob()
         self.setNetInput()
         self.getOutput()
@@ -254,7 +232,7 @@ class VideoReaderSerial(QtCore.QObject):
         self.ser.write(b'end of the hunt \n')
         endtime = time.time()
         avgCyle = round(sum(self.oneCycleList[2:]) / len(self.oneCycleList[2:]),3)
-        acString = "avg_cycle_time: " + str(avgCyle) + " s \n"
+        acString = "avg_processing_time: " + str(avgCyle) + " s \n"
         self.mainWindow.console.setText(self.mainWindow.console.text() + acString)
         
         avgNetTime = round(sum(self.netTimeList[2:]) / len(self.netTimeList[2:]),3)
@@ -262,10 +240,18 @@ class VideoReaderSerial(QtCore.QObject):
         self.mainWindow.console.setText(self.mainWindow.console.text() + antString)
 
         wholeTime = round((endtime - starttime),3)
-        wtString = "whole video time: " + str(wholeTime) + " s \n \n"
+        wtString = "whole video time: " + str(wholeTime) + " s \n"
         self.mainWindow.console.setText(self.mainWindow.console.text() + wtString)
+
+        dString = "detections: " + str(sum(self.detections)) + " \n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + dString)
+
+        strich = "========================================================\n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + strich)
+
+        self.mainWindow.autoscroll()
         #self.ser.close()
 
-    #def autoscroll(self):
-    #    QtWidgets.QApplication.processEvents()
-    #    self.mainWindow.scrollArea.verticalScrollBar().setValue(self.mainWindow.scrollArea.verticalScrollBar().maximum())
+    def autoscroll(self):
+        self.mainWindow.scrollArea.verticalScrollBar().setValue(self.mainWindow.scrollArea.verticalScrollBar().maximum())
+        #QtWidgets.QApplication.processEvents()

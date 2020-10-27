@@ -4,7 +4,7 @@
 import cv2
  
 def getTile(modCounter, frame):
-    #print("FuncSerial.getTile()")
+    #print("functions.getTile().frame.shape: ", frame.shape)
     switch = {
         1: frame[0:512, 0:512],
         2: frame[0:512, 512:1024], 

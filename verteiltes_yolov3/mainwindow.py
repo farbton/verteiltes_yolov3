@@ -10,7 +10,7 @@ from PyQt5.QtGui import QPixmap, QImage, QFont, QIcon
 from video_reader_parallel import ReaderParallel
 from video_reader_serial import VideoReaderSerial
 from image_reader_serial import ImageReaderSerial
-from video_reader_live import ReaderLive
+from video_reader_live import VideoReaderLive
 
 #Klasse die in das MainWindow schreiben darf
 class Window(QtWidgets.QMainWindow):
@@ -19,8 +19,15 @@ class Window(QtWidgets.QMainWindow):
         super(Window, self).__init__()       
         uic.loadUi("gui.ui", self)
         self.console.setFont(QFont('Times', 9))
-        self.setWindowTitle("Viewer for Yolov")
-        self.setWindowIcon(QIcon("icon.png"))
+        self.setWindowTitle("YOLO-Viewer")
+        icon = QIcon()
+        #icon.addFile("icons/favicon-16x16.png", QtCore.QSize(16,16))
+        #icon.addFile("icons/favicon-32x32.png", QtCore.QSize(32,32))
+        #icon.addFile("icons/favicon-48x48.png", QtCore.QSize(48,48))
+        icon.addFile("icons/favicon-192x192.png", QtCore.QSize(192,192))
+        icon.addFile("icons/favicon-512x512.png", QtCore.QSize(512,512))
+        #icon.addFile("icons/icon.png", QtCore.QSize(512,512))
+        self.setWindowIcon(icon)
         
         pString = "Python-Version: " + str(platform.python_version() + "\n")
         self.console.setText(self.console.text() + pString)
@@ -48,7 +55,6 @@ class Window(QtWidgets.QMainWindow):
         vnString = ".avi: " + str(self.videoFileName.rpartition("/")[2]) + "\n" + "\n"
         self.console.setText(self.console.text() + vnString)
        
-        #self.readerLive = ReaderLive(self)
         self.lock = True
         self.mutexDislpay = QtCore.QMutex()
         self.mutexList = QtCore.QMutex()
@@ -70,10 +76,11 @@ class Window(QtWidgets.QMainWindow):
         self.actionload_image_512_pix.triggered.connect(self.loadImageName512)
         self.actionload_video_parallel.triggered.connect(self.loadVideoParallel)
         self.actionload_video_serial.triggered.connect(self.loadVideoFile)
-        self.actionload_HXC40.triggered.connect(self.loadLiveVideo)
+        self.actionload_HXC40.triggered.connect(self.loadVideoLive)
         self.actionload_cfg.triggered.connect(self.loadCfgFile)
         self.actionload_weights.triggered.connect(self.loadWeightsFile)
         self.actionload_data.triggered.connect(self.loadDataFile)
+        self.actionload_video_info.triggered.connect(self.getVideoInfo)
 
     def loadWeightsFile(self):
         (filename, selectedFilter) = QtWidgets.QFileDialog.getOpenFileName(None, 'Select a .weights:', 'C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/yolo', "*.weights")
@@ -195,7 +202,7 @@ class Window(QtWidgets.QMainWindow):
         #cv2.imshow(" k " , self.detectedImage512)
         string = self.console.text() + "{:2f} s \n".format(end - start)
         self.console.setText(string)
-        string = "detections: " + str(detections) + "\n" +"\n"
+        string = "detections: " + str(detections) + "\n" + "\n"
         self.console.setText(self.console.text() + string)
         if(self.detectedImage.shape[0] == 512):
             self.convertCv2ToQImage512()
@@ -220,15 +227,15 @@ class Window(QtWidgets.QMainWindow):
         videoReaderSerial.getVideo(self.videoFileName)
         self.statusBar().clearMessage()
 
-    def loadLiveVideo(self):
-        
+    def loadVideoLive(self):
+        videoReaderLive = VideoReaderLive(self, self.weightsFileName, self.cfgFileName, self.classesFileName)
         self.statusBar().showMessage("play video ...")
-        self.readerLive.getVideo()
+        #videoReaderLive.getVideo()
         self.statusBar().clearMessage()
 
     def autoscroll(self):
-        QtWidgets.QApplication.processEvents()
         self.scrollArea.verticalScrollBar().setValue(self.scrollArea.verticalScrollBar().maximum())
+        QtWidgets.QApplication.processEvents()
         
     def resizeEvent(self, event):
         if self.lock == False:
@@ -242,22 +249,39 @@ class Window(QtWidgets.QMainWindow):
             self.pixmapSetScene()
             self.addSceneToPlayer()
 
-    @QtCore.pyqtSlot(QImage)
-    def display(self, frame):
-        #self.mutexDislpay.lock()
-        print("Mainwindow.display(): ")
-        height = self.player.geometry().height()
-        width = self.player.geometry().width()
-        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        #frameImage = QImage(frame.data, frame.shape[1], frame.shape[0],
-        #QImage.Format_RGB888)
-        pixMap = QPixmap.fromImage(frame)
-        pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
-        scene = QtWidgets.QGraphicsScene()
-        scene.addPixmap(pixMap) # return pixmapitem
-        self.player.setScene(scene)
-        #end = time.time()
-        #print(end-start)
-        #self.mainWindow.console.clear()
-        QtWidgets.QApplication.processEvents()
-        #self.mutexDislpay.unlock()
+    #@QtCore.pyqtSlot(QImage)
+    #def display(self, qimage):
+    #    #self.mutexDislpay.lock()
+    #    print("Mainwindow.display(): ")
+    #    height = self.player.geometry().height()
+    #    width = self.player.geometry().width()
+    #    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    #    #frameImage = QImage(frame.data, frame.shape[1], frame.shape[0],
+    #    #QImage.Format_RGB888)
+    #    pixMap = QPixmap.fromImage(qimage)
+    #    pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
+    #    scene = QtWidgets.QGraphicsScene()
+    #    scene.addPixmap(pixMap) # return pixmapitem
+    #    self.player.setScene(scene)
+    #    #end = time.time()
+    #    #print(end-start)
+    #    #self.mainWindow.console.clear()
+    #    QtWidgets.QApplication.processEvents()
+    #    #self.mutexDislpay.unlock()
+
+    def getVideoInfo(self):
+        cap = cv2.VideoCapture(self.videoFileName)
+        nString = "VideoCaptureBackendName: " + cap.getBackendName() + "\n"
+        self.console.setText(self.console.text() + nString)
+
+        fpsString = "fps: " + str(cap.get(cv2.CAP_PROP_FPS)) + "\n"
+        self.console.setText(self.console.text() + fpsString)
+
+        cString = "Codec: " + str(cap.get(cv2.CAP_PROP_CODEC_PIXEL_FORMAT)) + "\n"
+        self.console.setText(self.console.text() + cString)
+
+        whString = "width x height: " + str(int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))) + " x " + str(int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))) + "\n"
+        self.console.setText(self.console.text() + whString)
+
+        cap.release()
+        self.autoscroll()
