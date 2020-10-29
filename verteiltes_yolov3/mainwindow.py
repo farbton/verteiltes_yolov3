@@ -7,7 +7,7 @@ from PyQt5 import QtCore, QtWidgets, uic
 from PyQt5.QtGui import QPixmap, QImage, QFont, QIcon
 
 
-from video_reader_parallel import ReaderParallel
+#from video_reader_parallel import ReaderParallel
 from video_reader_serial import VideoReaderSerial
 from image_reader_serial import ImageReaderSerial
 from video_reader_live import VideoReaderLive
@@ -20,14 +20,14 @@ class Window(QtWidgets.QMainWindow):
         uic.loadUi("gui.ui", self)
         self.console.setFont(QFont('Times', 9))
         self.setWindowTitle("YOLO-Viewer")
-        icon = QIcon()
+        #icon = QIcon()
         #icon.addFile("icons/favicon-16x16.png", QtCore.QSize(16,16))
         #icon.addFile("icons/favicon-32x32.png", QtCore.QSize(32,32))
         #icon.addFile("icons/favicon-48x48.png", QtCore.QSize(48,48))
-        icon.addFile("icons/favicon-192x192.png", QtCore.QSize(192,192))
-        icon.addFile("icons/favicon-512x512.png", QtCore.QSize(512,512))
+        #icon.addFile("icons/favicon-192x192.png", QtCore.QSize(192,192))
+        #icon.addFile("icons/favicon-512x512.png", QtCore.QSize(512,512))
         #icon.addFile("icons/icon.png", QtCore.QSize(512,512))
-        self.setWindowIcon(icon)
+        #self.setWindowIcon(icon)
         
         pString = "Python-Version: " + str(platform.python_version() + "\n")
         self.console.setText(self.console.text() + pString)
@@ -135,8 +135,8 @@ class Window(QtWidgets.QMainWindow):
         self.playerHeight = self.player.geometry().height()
         self.playerWidth = self.player.geometry().width()
 
-    def convertCv2ToQImage2048(self):
-        self.qimage = QImage(self.detectedImage, 2048, 2048, QImage.Format_RGB888)
+    def convertCv2ToQImage(self, aufloesung):       
+        self.qimage = QImage(self.detectedImage, aufloesung[0], aufloesung[1], QImage.Format_RGB888)
 
     def convertCv2ToQImage512(self):
         self.qimage = QImage(self.detectedImage, 512, 512, QImage.Format_RGB888)
@@ -176,8 +176,11 @@ class Window(QtWidgets.QMainWindow):
         (filename, selectedFilter) = QtWidgets.QFileDialog.getOpenFileName(None, 'Select a image:', 'C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/images')
         self.imageName = filename
         self.detectedImage = cv2.imread(self.imageName)
+        self.detectedImage = cv2.cvtColor(self.detectedImage, cv2.COLOR_BGR2RGB)
+        #cv2.imshow("test", self.detectedImage)
         aufloesung = self.detectedImage.shape
-        self.convertCv2ToQImage2048()
+        #print(str(aufloesung))
+        self.convertCv2ToQImage(aufloesung)
         self.qimageToPixmap()
         self.resizePixmap()
         self.pixmapSetScene()
@@ -204,10 +207,13 @@ class Window(QtWidgets.QMainWindow):
         self.console.setText(string)
         string = "detections: " + str(detections) + "\n" + "\n"
         self.console.setText(self.console.text() + string)
+
         if(self.detectedImage.shape[0] == 512):
             self.convertCv2ToQImage512()
         else:
-            self.convertCv2ToQImage2048()
+            
+            self.convertCv2ToQImage(self.detectedImage.shape)
+
         self.qimageToPixmap()
         self.resizePixmap()
         self.pixmapSetScene()
@@ -229,9 +235,9 @@ class Window(QtWidgets.QMainWindow):
 
     def loadVideoLive(self):
         videoReaderLive = VideoReaderLive(self, self.weightsFileName, self.cfgFileName, self.classesFileName)
-        self.statusBar().showMessage("play video ...")
+        #self.statusBar().showMessage("play video ...")
         #videoReaderLive.getVideo()
-        self.statusBar().clearMessage()
+        #self.statusBar().clearMessage()
 
     def autoscroll(self):
         self.scrollArea.verticalScrollBar().setValue(self.scrollArea.verticalScrollBar().maximum())
@@ -259,7 +265,8 @@ class Window(QtWidgets.QMainWindow):
     #    #frameImage = QImage(frame.data, frame.shape[1], frame.shape[0],
     #    #QImage.Format_RGB888)
     #    pixMap = QPixmap.fromImage(qimage)
-    #    pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
+    #    pixMap = pixMap.scaled(QtCore.QSize(height, width),
+    #    QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
     #    scene = QtWidgets.QGraphicsScene()
     #    scene.addPixmap(pixMap) # return pixmapitem
     #    self.player.setScene(scene)

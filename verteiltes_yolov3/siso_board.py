@@ -1,4 +1,5 @@
 from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 from PyQt5.QtGui import QImage, QPixmap
 import sys
 import time
@@ -26,9 +27,9 @@ class MyApcData:
         self.displayid = displayid
 
 
-class siso_board(QtCore.QThread):
+class SisoBoard(QtCore.QObject):
     def __init__(self, mainWindow):
-        QtCore.QThread.__init__(self)
+        QtCore.QObject.__init__(self)
         self.mainWindow = mainWindow
         self.signals = WorkerSignals()
         
@@ -180,7 +181,9 @@ class siso_board(QtCore.QThread):
 
 
     def initBoard(self):
-        print('Runtime Version:', siso.Fg_getSWVersion())    
+        #print('SisoRuntime Version:', siso.Fg_getSWVersion())   
+        sString = "SisoRuntime Version: " + siso.Fg_getSWVersion() + "\n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
         boardId = 0 #self.selectBoardDialog()
         # definition of resolution
         width = 2048
@@ -202,7 +205,9 @@ class siso_board(QtCore.QThread):
         item = siso.Fg_getAppletIteratorItem(iter, 14)
         applet = siso.Fg_getAppletStringProperty(item, siso.FG_AP_STRING_APPLET_NAME)
         #applet = self.selectAppletDialog(boardId)
-        print(applet)
+        #print(applet)
+        #apString = "Applet: " + applet + "\n"
+        #self.mainWindow.console.setText(self.mainWindow.console.text() + apString)
         global_imgNr = -1
 
         # Callback function definition
@@ -219,7 +224,9 @@ class siso_board(QtCore.QThread):
             print("Error", err, ":", mes)
             sys.exit()
         else:
-            print("ok")
+            #print("ok")
+            okString = "config ok" + "\n"
+            self.mainWindow.console.setText(self.mainWindow.console.text() + okString)
 
         # allocating memory
         memHandle = siso.Fg_AllocMemEx(fg, totalBufferSize, nbBuffers)
@@ -257,16 +264,25 @@ class siso_board(QtCore.QThread):
         # Read back settings
         (err, oWidth) = siso.Fg_getParameterWithInt(fg, siso.FG_WIDTH, camPort)
         if (err == 0):
-            print('Width =', oWidth)
+            #print('Width =', oWidth)
+            widthString = "Width: " + str(oWidth) + "\n"
+            self.mainWindow.console.setText(self.mainWindow.console.text() + widthString)
+
         (err, oHeight) = siso.Fg_getParameterWithInt(fg, siso.FG_HEIGHT, camPort)
         if (err == 0):
-            print('Height =', oHeight)
+            #print('Height =', oHeight)
+            heightString = "Height: " + str(oHeight) + "\n"
+            self.mainWindow.console.setText(self.mainWindow.console.text() + heightString)
+
         (err, oString) = siso.Fg_getParameterWithString(fg, siso.FG_HAP_FILE, camPort)
         if (err == 0):
-            print('Hap File =', oString)
+            #print('Hap File =', oString)
+            hapString = "Hap File: " + oString + "\n"
+            self.mainWindow.console.setText(self.mainWindow.console.text() + hapString)
 
         # create a display window
-        #dispId0 = siso.CreateDisplay(8 * bytePerSample * samplePerPixel, width, height)
+        #dispId0 = siso.CreateDisplay(8 * bytePerSample * samplePerPixel,
+        #width, height)
         #siso.SetBufferWidth(dispId0, width, height)
 
         #Define FgApcControl instance to handle the callback
@@ -284,7 +300,9 @@ class siso_board(QtCore.QThread):
             exit(err)
 
         # Start acquisition
-        print("Acquisition started")
+        #print("Acquisition started")
+        acString = "Acquisition started" + "\n"
+        self.mainWindow.console.setText(self.mainWindow.console.text() + acString)
 
         err = siso.Fg_AcquireEx(fg, camPort, -1, siso.ACQ_BLOCK, memHandle)
         if (err != 0):
@@ -298,9 +316,9 @@ class siso_board(QtCore.QThread):
         #m = np.ones((2, 2), np.uint64)
         #m = [0,0,0,0,0]
         counter = 1
-        while(counter < 10):
-            bufNr = siso.Fg_getImageEx(fg, siso.SEL_NEXT_IMAGE, counter, camPort, 2, memHandle)
-            #print("bufNr: " + str(bufNr))
+        while(counter < 60 and not self.mainWindow.pushButton_stop.isChecked()):
+            bufNr = siso.Fg_getImageEx(fg, siso.SEL_ACT_IMAGE, 0, camPort, 2, memHandle)
+            print("bufNr: " + str(bufNr))
             ulp_buf = siso.Fg_getImagePtrEx(fg, bufNr, camPort, memHandle)
             #print("str(ulp_buf): " + str(ulp_buf))
             #print("str(id(ulp_buf)): " + str(id(ulp_buf)))
@@ -315,14 +333,18 @@ class siso_board(QtCore.QThread):
             #for i in range(4):
             #    m[i] = id(ulp_buf) + i
             #print(m.dtype)
-            #cv2.imshow("test", m )
+            #cv2.imshow("test", nparray )
             #cv2.waitKey(0)
             #print(mat / 255)
             #print(m.shape)
             #qimage = QImage(m, 2048, 2048, QImage.Format_Grayscale8)
             self.signals.live_image.emit(nparray)
+            #self.yieldCurrentThread()
+            #print("emit_arrray")
+            #QtWidgets.QApplication.processEvents()
+            #time.sleep(0.5)
             counter += 1
-            siso.Fg_setStatusEx(fg, siso.FG_UNBLOCK, bufNr, camPort, memHandle);
+            siso.Fg_setStatusEx(fg, siso.FG_UNBLOCK, bufNr, camPort, memHandle)
             #self.yoloThread.signals.output_signal.connect(self.display)
             #siso.memcpy(mat, ulp_buf, totalBufferSize)
             #writer.write(frame_rgb);
@@ -330,4 +352,12 @@ class siso_board(QtCore.QThread):
 
 
         #siso.CloseDisplay(dispId0)
-        
+        # Clean up
+        if (fg != None):
+            siso.Fg_stopAcquire(fg, camPort)
+            siso.Fg_FreeMemEx(fg, memHandle)
+            siso.Fg_FreeGrabber(fg)
+            stopString = "Acquisition stoped" + "\n"
+            self.mainWindow.console.setText(self.mainWindow.console.text() + stopString)
+            #print("Acquisition stoped")
+            #self.autoscroll()

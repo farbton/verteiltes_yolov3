@@ -60,10 +60,12 @@ class ImageReaderSerial(QtCore.QObject):
     def setLayerNames(self):
         self.layerNames = self.net.getLayerNames()
         self.layerNames = [self.layerNames[i[0] - 1] for i in self.net.getUnconnectedOutLayers()]
-        print(self.layerNames)
+        #print(self.layerNames)
 
     def getImage(self, filename):
+
         self.tile = cv2.imread(filename)
+        self.tile = cv2.cvtColor(self.tile, cv2.COLOR_BGR2RGB)
         self.createBlob()
         self.setNetInput()
         self.getOutput()
@@ -78,7 +80,7 @@ class ImageReaderSerial(QtCore.QObject):
    
     def createBlob(self):
         self.blob = cv2.dnn.blobFromImage(self.tile, 1 / 255, (self.tile.shape[0], self.tile.shape[1]), [0,0,0], 1, crop=False)
-        print(self.blob)
+        #print(self.blob)
 
     def setNetInput(self):
         self.net.setInput(self.blob)        

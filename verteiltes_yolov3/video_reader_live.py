@@ -31,9 +31,6 @@ class VideoReaderLive(QtCore.QObject):
 
         time.sleep(2)
         
-        self.boardThread = siso_board.siso_board(self)   
-        self.boardThread.start()
-        self.boardThread.signals.live_image.connect(self.detectImage)
         self.imageHeight = 512
         self.imageWidth = 512
         self.conf_threshhold = 0.9 
@@ -47,7 +44,14 @@ class VideoReaderLive(QtCore.QObject):
         self.getClassesNames()
         self.readNet()
         self.setLayerNames()
-
+        
+        self.boardThread = siso_board.SisoBoard(self.mainWindow)   
+        self.boardThread.signals.live_image.connect(self.detectImage)
+        #self.boardThread.finished.connect(self.test)
+        self.boardThread.run()
+            
+    def test(self):
+        print("fertig")
 
 
     def getClassesNames(self):        
@@ -170,11 +174,14 @@ class VideoReaderLive(QtCore.QObject):
                 self.boxesString.append(string) 
                 cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
                 self.detections.append(len(self.idxs))
-                
+        else:
+            #cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
+            cv2.putText(self.tile, "X", (256, 256), cv2.FONT_HERSHEY_SIMPLEX, 5, (255,0,0))
+
         #end = time.time()
         #print("drawLabels...() " + str(end - start))
  
-    @QtCore.pyqtSlot(np.ndarray)
+    #@QtCore.pyqtSlot(np.ndarray)
     def detectImage(self, ndarray): 
         #print("ndarray.shape: ",ndarray.shape)
         #cv2.imshow("test", ndarray )
@@ -202,6 +209,7 @@ class VideoReaderLive(QtCore.QObject):
         #cv2.imshow("test2", self.frameConcat)
         self.writeList()
         self.display()
+        
 
     def display(self):
         #print("Mainwindow.display(): ")
