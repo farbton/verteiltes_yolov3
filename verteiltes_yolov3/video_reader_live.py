@@ -17,7 +17,7 @@ class VideoReaderLive(QtCore.QObject):
         self.weightsFileName = weightsFileName
         self.cfgFileName = cfgFileName
         self.classesFileName = classesFileName
-        self.detections = []
+        
                
         try:
             self.ser = serial.Serial('COM3', 9600)
@@ -150,6 +150,7 @@ class VideoReaderLive(QtCore.QObject):
     def drawLabelsAndBoxes(self):
         #print("Yolo.drawLabelsAndBoxes()")
         self.boxesString = []
+        self.detections = 0
         #start = time.time()
         if len(self.idxs) > 0:
             for i in self.idxs.flatten():
@@ -173,11 +174,11 @@ class VideoReaderLive(QtCore.QObject):
                 #more classes
                 self.boxesString.append(string) 
                 cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
-                self.detections.append(len(self.idxs))
+                self.detections = len(self.idxs)
         else:
             #cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
-            cv2.putText(self.tile, "X", (256, 256), cv2.FONT_HERSHEY_SIMPLEX, 5, (255,0,0))
-
+            #cv2.putText(self.tile, "X", (256, 256), cv2.FONT_HERSHEY_SIMPLEX, 5, (255,0,0))
+            pass
         #end = time.time()
         #print("drawLabels...() " + str(end - start))
  
@@ -223,7 +224,7 @@ class VideoReaderLive(QtCore.QObject):
         self.mainWindow.player.setScene(scene)
         QtWidgets.QApplication.processEvents()
         self.end_time = time.time()
-        dString = "detections: " + str(sum(self.detections)) + " \n"
+        dString = "detections: " + str(self.detections) + " \n"
         self.mainWindow.console.setText(self.mainWindow.console.text() + dString)
         self.autoscroll()
         #self.oneCycleList.append(self.end_time - self.begin_time)

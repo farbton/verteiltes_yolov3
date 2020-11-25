@@ -316,9 +316,9 @@ class SisoBoard(QtCore.QObject):
         #m = np.ones((2, 2), np.uint64)
         #m = [0,0,0,0,0]
         counter = 1
-        while(counter < 60 and not self.mainWindow.pushButton_stop.isChecked()):
+        while(not self.mainWindow.pushButton_stop.isChecked()):
             bufNr = siso.Fg_getImageEx(fg, siso.SEL_ACT_IMAGE, 0, camPort, 2, memHandle)
-            print("bufNr: " + str(bufNr))
+            #print("bufNr: " + str(bufNr))
             ulp_buf = siso.Fg_getImagePtrEx(fg, bufNr, camPort, memHandle)
             #print("str(ulp_buf): " + str(ulp_buf))
             #print("str(id(ulp_buf)): " + str(id(ulp_buf)))
