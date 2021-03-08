@@ -17,10 +17,11 @@ class VideoReaderLive(QtCore.QObject):
         self.weightsFileName = weightsFileName
         self.cfgFileName = cfgFileName
         self.classesFileName = classesFileName
+       
         
                
         try:
-            self.ser = serial.Serial('COM3', 9600)
+            self.ser = serial.Serial('COM5', 9600)
             self.ser.write(b'hello here is the weevil hunter\'s eye \n')
             self.ser.write(b'class quadrant confidence x y \n')
             sString = "COM-Port: " + self.ser.name + "\n"
@@ -147,10 +148,22 @@ class VideoReaderLive(QtCore.QObject):
         #end = time.time()
         #print("nonMaximaSupress() " + str(end - start))
 
+    def writeLog(self, class_, stringLog):
+        listValue = str(self.detections) + " " + \
+            str(self.classes[class_]) + \
+            " detection(s) on | " + \
+            str(time.asctime()) + " | " + \
+            stringLog + \
+            " \n"
+        self.detectionListFile = open("detectionLog.txt", "a")
+        self.detectionListFile.write(listValue)
+        self.detectionListFile.close()
+
     def drawLabelsAndBoxes(self):
         #print("Yolo.drawLabelsAndBoxes()")
         self.boxesString = []
         self.detections = 0
+        self.processtime = 0
         #start = time.time()
         if len(self.idxs) > 0:
             for i in self.idxs.flatten():
@@ -175,6 +188,11 @@ class VideoReaderLive(QtCore.QObject):
                 self.boxesString.append(string) 
                 cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
                 self.detections = len(self.idxs)
+                if self.detections > 0:
+                    class_ = self.classids[i]
+                    stringLog = "confidence: {:3.2f} x={:4d} y={:4d}".format(self.confidences[i], global_x, global_y) 
+                    self.writeLog(class_, stringLog)
+                    
         else:
             #cv2.rectangle(self.tile, (x,y), (x + w, y + h), (255,0,0), 2)
             #cv2.putText(self.tile, "X", (256, 256), cv2.FONT_HERSHEY_SIMPLEX, 5, (255,0,0))
@@ -185,29 +203,23 @@ class VideoReaderLive(QtCore.QObject):
     #@QtCore.pyqtSlot(np.ndarray)
     def detectImage(self, ndarray): 
         #print("ndarray.shape: ",ndarray.shape)
-        #cv2.imshow("test", ndarray )
-        #cv2.waitKey(0)
-        frame3d = np.ndarray((2048, 2048, 3), dtype=np.uint8)
-        
+        frame3d = np.ndarray((2048, 2048, 3), dtype=np.uint8)      
         frame3d[:,:,0] = ndarray
         frame3d[:,:,1] = ndarray
         frame3d[:,:,2] = ndarray
-        #cv2.imshow("test", frame3d )
-        #cv2.waitKey(0)
+
         self.modCount()
         self.tile = functions.getTile(self.modCounter, frame3d)
-        #print("tile.shape: ",self.tile.shape)
-        #print("tile.dtype: ",self.tile.dtype)
+        time_start = time.time()
         self.createBlob()
         self.setNetInput()
         self.getOutput()
         self.generateBoxes_confidences_classids()
         self.nonMaximaSupress()
-        #cv2.imshow("test", self.tile )
-        #cv2.waitKey(0)
         self.drawLabelsAndBoxes()
+        time_end = time.time()
         self.frame = functions.concatTileAndFrame(self.modCounter, frame3d, self.tile)
-        #cv2.imshow("test2", self.frameConcat)
+        self.processtime = time_end - time_start
         self.writeList()
         self.display()
         
@@ -224,8 +236,8 @@ class VideoReaderLive(QtCore.QObject):
         self.mainWindow.player.setScene(scene)
         QtWidgets.QApplication.processEvents()
         self.end_time = time.time()
-        dString = "detections: " + str(self.detections) + " \n"
-        self.mainWindow.console.setText(self.mainWindow.console.text() + dString)
+        dString = "detections: " + str(self.detections) + " time: " + str(round(self.processtime,3))  + " s \n"
+        self.mainWindow.console.setText(dString)
         self.autoscroll()
         #self.oneCycleList.append(self.end_time - self.begin_time)
         #print("ser_oneCycle: " + str(round(self.end_time - self.begin_time,3)) + " netTime: " + str(round(self.netTime,3)))

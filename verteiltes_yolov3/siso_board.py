@@ -10,6 +10,11 @@ import numpy as np
 import cv2
 import ctypes
 
+# CL Config Tool Settings:
+# Exposure: Timed
+# InterfaceTaps: 8
+# SensorDestinationTaps: Sixteen
+# Trigger: not enabled
 
 # Additional Class definition
 # Data for APC Callback
@@ -212,6 +217,7 @@ class SisoBoard(QtCore.QObject):
 
         # Callback function definition
         def apcCallback(imgNr, userData):
+            print("imgNr: " + imgNr)
             siso.DrawBuffer(userData.displayid, siso.Fg_getImagePtrEx(userData.fg, imgNr, userData.port, userData.mem), imgNr, "")
             return 0
 
@@ -315,10 +321,10 @@ class SisoBoard(QtCore.QObject):
         #m = np.ones((width, height), np.uint64)
         #m = np.ones((2, 2), np.uint64)
         #m = [0,0,0,0,0]
-        counter = 1
+        #counter = 1
         while(not self.mainWindow.pushButton_stop.isChecked()):
+            #time_start = time.time()
             bufNr = siso.Fg_getImageEx(fg, siso.SEL_ACT_IMAGE, 0, camPort, 2, memHandle)
-            #print("bufNr: " + str(bufNr))
             ulp_buf = siso.Fg_getImagePtrEx(fg, bufNr, camPort, memHandle)
             #print("str(ulp_buf): " + str(ulp_buf))
             #print("str(id(ulp_buf)): " + str(id(ulp_buf)))
@@ -343,12 +349,15 @@ class SisoBoard(QtCore.QObject):
             #print("emit_arrray")
             #QtWidgets.QApplication.processEvents()
             #time.sleep(0.5)
-            counter += 1
+            #counter += 1
             siso.Fg_setStatusEx(fg, siso.FG_UNBLOCK, bufNr, camPort, memHandle)
+            #time_end = time.time()
             #self.yoloThread.signals.output_signal.connect(self.display)
             #siso.memcpy(mat, ulp_buf, totalBufferSize)
             #writer.write(frame_rgb);
             #time.sleep(1);
+            #diff = time_end - time_start
+            #print("bufNr: " + str(bufNr) + " time: " + str(round(diff,6)))
 
 
         #siso.CloseDisplay(dispId0)

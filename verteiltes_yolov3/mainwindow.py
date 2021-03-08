@@ -17,8 +17,9 @@ class Window(QtWidgets.QMainWindow):
     
     def __init__(self):       
         super(Window, self).__init__()       
-        uic.loadUi("gui.ui", self)
+        uic.loadUi("guiNew.ui", self)
         self.console.setFont(QFont('Times', 9))
+        self.labelWeights.setFont(QFont('Times', 9))
         self.setWindowTitle("YOLO-Viewer")
         #icon = QIcon()
         #icon.addFile("icons/favicon-16x16.png", QtCore.QSize(16,16))
@@ -54,6 +55,8 @@ class Window(QtWidgets.QMainWindow):
         self.videoFileName = "videos/12-12-2019 MONO 30fps 11_51_25_Testvideo_10s.avi" 
         vnString = ".avi: " + str(self.videoFileName.rpartition("/")[2]) + "\n" + "\n"
         self.console.setText(self.console.text() + vnString)
+
+        self.labelWeights.setText(str(self.weightsFileName.rpartition("/")[2]))
        
         self.lock = True
         self.mutexDislpay = QtCore.QMutex()
@@ -72,6 +75,7 @@ class Window(QtWidgets.QMainWindow):
         self.pushButton_clear.clicked.connect(self.refreshConsoleAndList)
         self.pushButton_detectVideo.clicked.connect(self.loadVideoSerial)
         self.pushButton_detectImage.clicked.connect(self.startDetection)
+        self.pushButton_play.clicked.connect(self.loadVideoLive)
         self.actionload_image.triggered.connect(self.loadImageName2048)
         self.actionload_image_512_pix.triggered.connect(self.loadImageName512)
         self.actionload_video_parallel.triggered.connect(self.loadVideoParallel)
@@ -87,6 +91,7 @@ class Window(QtWidgets.QMainWindow):
         self.weightsFileName = filename
         string = "weightsFile: " + str(filename.rpartition("/")[2]) + "\n"
         self.console.setText(self.console.text() + string)
+        self.labelWeights.setText(str(filename.rpartition("/")[2]))
         self.autoscroll()
 
     def loadCfgFile(self):
@@ -234,7 +239,9 @@ class Window(QtWidgets.QMainWindow):
         self.statusBar().clearMessage()
 
     def loadVideoLive(self):
+        self.pushButton_stop.setChecked(False)
         videoReaderLive = VideoReaderLive(self, self.weightsFileName, self.cfgFileName, self.classesFileName)
+        #print(str())
         #self.statusBar().showMessage("play video ...")
         #videoReaderLive.getVideo()
         #self.statusBar().clearMessage()
@@ -278,7 +285,7 @@ class Window(QtWidgets.QMainWindow):
 
     def getVideoInfo(self):
         cap = cv2.VideoCapture(self.videoFileName)
-        nString = "VideoCaptureBackendName: " + cap.getBackendName() + "\n"
+        nString = " \n" + "VideoCaptureBackendName: " + cap.getBackendName() + "\n"
         self.console.setText(self.console.text() + nString)
 
         fpsString = "fps: " + str(cap.get(cv2.CAP_PROP_FPS)) + "\n"

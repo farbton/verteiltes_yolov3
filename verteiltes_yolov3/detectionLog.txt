@@ -1,0 +1,185 @@
+1 weevil detection(s) on | Fri Mar  5 09:40:11 2021 | confidence: 0.98 x= 713 y= 417 
+1 weevil detection(s) on | Fri Mar  5 09:40:11 2021 | confidence: 0.98 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:40:11 2021 | confidence: 0.98 x= 512 y=1841 
+1 weevil detection(s) on | Fri Mar  5 09:40:14 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:40:15 2021 | confidence: 0.98 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:40:15 2021 | confidence: 0.98 x= 512 y=1842 
+1 weevil detection(s) on | Fri Mar  5 09:40:18 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:40:18 2021 | confidence: 0.98 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:40:18 2021 | confidence: 0.98 x= 512 y=1842 
+1 weevil detection(s) on | Fri Mar  5 09:40:21 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:40:22 2021 | confidence: 0.98 x= 517 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:40:22 2021 | confidence: 0.97 x= 512 y=1842 
+1 weevil detection(s) on | Fri Mar  5 09:40:25 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:40:25 2021 | confidence: 0.98 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:40:26 2021 | confidence: 0.98 x= 512 y=1842 
+1 weevil detection(s) on | Fri Mar  5 09:40:29 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:40:29 2021 | confidence: 0.98 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:40:29 2021 | confidence: 0.98 x= 512 y=1841 
+1 weevil detection(s) on | Fri Mar  5 09:41:20 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:41:21 2021 | confidence: 0.97 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:41:21 2021 | confidence: 0.98 x= 512 y=1841 
+1 weevil detection(s) on | Fri Mar  5 09:41:24 2021 | confidence: 0.97 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:41:24 2021 | confidence: 0.98 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:41:25 2021 | confidence: 0.98 x= 512 y=1841 
+1 weevil detection(s) on | Fri Mar  5 09:41:28 2021 | confidence: 0.97 x= 712 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:41:28 2021 | confidence: 0.98 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:41:28 2021 | confidence: 0.97 x= 513 y=1842 
+1 weevil detection(s) on | Fri Mar  5 09:41:31 2021 | confidence: 0.97 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:41:32 2021 | confidence: 0.97 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:41:32 2021 | confidence: 0.97 x= 512 y=1842 
+1 weevil detection(s) on | Fri Mar  5 09:41:35 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:41:35 2021 | confidence: 0.98 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:41:35 2021 | confidence: 0.98 x= 512 y=1841 
+1 weevil detection(s) on | Fri Mar  5 09:41:38 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:41:39 2021 | confidence: 0.97 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:41:39 2021 | confidence: 0.97 x= 512 y=1842 
+1 weevil detection(s) on | Fri Mar  5 09:41:55 2021 | confidence: 0.97 x= 713 y= 417 
+1 weevil detection(s) on | Fri Mar  5 09:41:56 2021 | confidence: 0.98 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:41:56 2021 | confidence: 0.98 x= 512 y=1841 
+1 weevil detection(s) on | Fri Mar  5 09:41:59 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 09:41:59 2021 | confidence: 0.96 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:42:00 2021 | confidence: 0.98 x= 512 y=1842 
+1 weevil detection(s) on | Fri Mar  5 09:42:03 2021 | confidence: 0.99 x= 713 y= 417 
+1 weevil detection(s) on | Fri Mar  5 09:42:03 2021 | confidence: 0.97 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 09:42:03 2021 | confidence: 0.98 x= 512 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:10 2021 | confidence: 0.99 x= 716 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:10 2021 | confidence: 0.92 x= 517 y=1292 
+1 weevil detection(s) on | Fri Mar  5 10:13:10 2021 | confidence: 0.94 x= 515 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:11 2021 | confidence: 0.99 x= 716 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:11 2021 | confidence: 0.90 x= 517 y=1292 
+1 weevil detection(s) on | Fri Mar  5 10:13:11 2021 | confidence: 0.90 x= 515 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:12 2021 | confidence: 0.99 x= 716 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:12 2021 | confidence: 0.93 x= 515 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:13 2021 | confidence: 0.99 x= 716 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:13 2021 | confidence: 0.91 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 10:13:13 2021 | confidence: 0.91 x= 515 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:14 2021 | confidence: 0.99 x= 716 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:14 2021 | confidence: 0.91 x= 515 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:15 2021 | confidence: 0.99 x= 716 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:15 2021 | confidence: 0.92 x= 515 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:16 2021 | confidence: 0.99 x= 716 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:16 2021 | confidence: 0.92 x= 515 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:17 2021 | confidence: 0.99 x= 716 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:17 2021 | confidence: 0.90 x= 517 y=1292 
+1 weevil detection(s) on | Fri Mar  5 10:13:17 2021 | confidence: 0.91 x= 515 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:18 2021 | confidence: 0.99 x= 716 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:18 2021 | confidence: 0.90 x= 517 y=1292 
+1 weevil detection(s) on | Fri Mar  5 10:13:18 2021 | confidence: 0.92 x= 515 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:19 2021 | confidence: 0.99 x= 716 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:19 2021 | confidence: 0.92 x= 517 y=1292 
+1 weevil detection(s) on | Fri Mar  5 10:13:36 2021 | confidence: 0.98 x= 713 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:36 2021 | confidence: 0.96 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 10:13:36 2021 | confidence: 0.98 x= 512 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:39 2021 | confidence: 0.98 x= 712 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:40 2021 | confidence: 0.96 x= 517 y=1292 
+1 weevil detection(s) on | Fri Mar  5 10:13:40 2021 | confidence: 0.97 x= 512 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:43 2021 | confidence: 0.98 x= 712 y= 417 
+1 weevil detection(s) on | Fri Mar  5 10:13:43 2021 | confidence: 0.97 x= 517 y=1292 
+1 weevil detection(s) on | Fri Mar  5 10:13:44 2021 | confidence: 0.98 x= 512 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:46 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Fri Mar  5 10:13:47 2021 | confidence: 0.93 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 10:13:47 2021 | confidence: 0.98 x= 512 y=1841 
+1 weevil detection(s) on | Fri Mar  5 10:13:50 2021 | confidence: 0.98 x= 712 y= 418 
+1 weevil detection(s) on | Fri Mar  5 10:13:51 2021 | confidence: 0.95 x= 516 y=1292 
+1 weevil detection(s) on | Fri Mar  5 10:13:51 2021 | confidence: 0.99 x= 512 y=1841 
+1 weevil detection(s) on | Mon Mar  8 11:19:40 2021 | confidence: 0.98 x= 718 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:40 2021 | confidence: 0.92 x= 517 y=1294 
+1 weevil detection(s) on | Mon Mar  8 11:19:40 2021 | confidence: 0.92 x= 515 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:19:41 2021 | confidence: 0.99 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:41 2021 | confidence: 0.94 x= 517 y=1294 
+1 weevil detection(s) on | Mon Mar  8 11:19:41 2021 | confidence: 0.91 x= 514 y=1842 
+1 weevil detection(s) on | Mon Mar  8 11:19:42 2021 | confidence: 0.98 x= 718 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:42 2021 | confidence: 0.95 x= 517 y=1294 
+1 weevil detection(s) on | Mon Mar  8 11:19:42 2021 | confidence: 0.94 x= 514 y=1842 
+1 weevil detection(s) on | Mon Mar  8 11:19:43 2021 | confidence: 0.98 x= 717 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:43 2021 | confidence: 0.90 x= 517 y=1294 
+1 weevil detection(s) on | Mon Mar  8 11:19:43 2021 | confidence: 0.93 x= 514 y=1842 
+1 weevil detection(s) on | Mon Mar  8 11:19:44 2021 | confidence: 0.99 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:44 2021 | confidence: 0.94 x= 517 y=1294 
+1 weevil detection(s) on | Mon Mar  8 11:19:44 2021 | confidence: 0.92 x= 514 y=1842 
+1 weevil detection(s) on | Mon Mar  8 11:19:45 2021 | confidence: 0.98 x= 717 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:45 2021 | confidence: 0.94 x= 517 y=1294 
+1 weevil detection(s) on | Mon Mar  8 11:19:46 2021 | confidence: 0.93 x= 514 y=1842 
+1 weevil detection(s) on | Mon Mar  8 11:19:46 2021 | confidence: 0.98 x= 717 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:47 2021 | confidence: 0.93 x= 517 y=1294 
+1 weevil detection(s) on | Mon Mar  8 11:19:47 2021 | confidence: 0.90 x= 514 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:19:47 2021 | confidence: 0.98 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:48 2021 | confidence: 0.95 x= 517 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:19:48 2021 | confidence: 0.93 x= 514 y=1842 
+1 weevil detection(s) on | Mon Mar  8 11:19:48 2021 | confidence: 0.98 x= 717 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:49 2021 | confidence: 0.93 x= 517 y=1294 
+1 weevil detection(s) on | Mon Mar  8 11:19:49 2021 | confidence: 0.92 x= 514 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:19:49 2021 | confidence: 0.98 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:50 2021 | confidence: 0.94 x= 517 y=1294 
+1 weevil detection(s) on | Mon Mar  8 11:19:50 2021 | confidence: 0.92 x= 514 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:19:51 2021 | confidence: 0.98 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:51 2021 | confidence: 0.92 x= 515 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:19:52 2021 | confidence: 0.98 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:52 2021 | confidence: 0.95 x= 517 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:19:52 2021 | confidence: 0.90 x= 514 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:19:53 2021 | confidence: 0.98 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:53 2021 | confidence: 0.93 x= 517 y=1294 
+1 weevil detection(s) on | Mon Mar  8 11:19:53 2021 | confidence: 0.92 x= 514 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:19:54 2021 | confidence: 0.98 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:54 2021 | confidence: 0.94 x= 517 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:19:54 2021 | confidence: 0.92 x= 514 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:19:55 2021 | confidence: 0.98 x= 717 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:55 2021 | confidence: 0.95 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:19:55 2021 | confidence: 0.92 x= 514 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:19:56 2021 | confidence: 0.98 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:56 2021 | confidence: 0.94 x= 517 y=1294 
+1 weevil detection(s) on | Mon Mar  8 11:19:56 2021 | confidence: 0.92 x= 514 y=1842 
+1 weevil detection(s) on | Mon Mar  8 11:19:57 2021 | confidence: 0.98 x= 717 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:57 2021 | confidence: 0.93 x= 517 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:19:57 2021 | confidence: 0.92 x= 514 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:19:58 2021 | confidence: 0.99 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:58 2021 | confidence: 0.93 x= 514 y=1842 
+1 weevil detection(s) on | Mon Mar  8 11:19:59 2021 | confidence: 0.98 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:19:59 2021 | confidence: 0.95 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:19:59 2021 | confidence: 0.93 x= 514 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:20:22 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Mon Mar  8 11:20:22 2021 | confidence: 0.97 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:20:22 2021 | confidence: 0.98 x= 512 y=1842 
+1 weevil detection(s) on | Mon Mar  8 11:20:25 2021 | confidence: 0.98 x= 712 y= 418 
+1 weevil detection(s) on | Mon Mar  8 11:20:26 2021 | confidence: 0.98 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:20:26 2021 | confidence: 0.98 x= 512 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:20:29 2021 | confidence: 0.99 x= 713 y= 418 
+1 weevil detection(s) on | Mon Mar  8 11:20:29 2021 | confidence: 0.97 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:20:30 2021 | confidence: 0.98 x= 512 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:20:33 2021 | confidence: 0.98 x= 713 y= 418 
+1 weevil detection(s) on | Mon Mar  8 11:20:33 2021 | confidence: 0.95 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:20:33 2021 | confidence: 0.97 x= 512 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:20:36 2021 | confidence: 0.99 x= 713 y= 418 
+1 weevil detection(s) on | Mon Mar  8 11:20:37 2021 | confidence: 0.98 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:20:37 2021 | confidence: 0.97 x= 512 y=1842 
+1 weevil detection(s) on | Mon Mar  8 11:20:40 2021 | confidence: 0.98 x= 712 y= 418 
+1 weevil detection(s) on | Mon Mar  8 11:20:41 2021 | confidence: 0.97 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:20:41 2021 | confidence: 0.97 x= 512 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:20:44 2021 | confidence: 0.97 x= 713 y= 418 
+1 weevil detection(s) on | Mon Mar  8 11:20:44 2021 | confidence: 0.97 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:20:45 2021 | confidence: 0.97 x= 512 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:39:23 2021 | confidence: 0.94 x= 714 y= 416 
+1 weevil detection(s) on | Mon Mar  8 11:39:25 2021 | confidence: 0.94 x= 714 y= 417 
+1 weevil detection(s) on | Mon Mar  8 11:39:27 2021 | confidence: 0.94 x= 714 y= 416 
+1 weevil detection(s) on | Mon Mar  8 11:39:29 2021 | confidence: 0.94 x= 714 y= 417 
+1 weevil detection(s) on | Mon Mar  8 11:39:31 2021 | confidence: 0.92 x= 714 y= 416 
+1 weevil detection(s) on | Mon Mar  8 11:39:33 2021 | confidence: 0.94 x= 714 y= 417 
+1 weevil detection(s) on | Mon Mar  8 11:39:35 2021 | confidence: 0.91 x= 714 y= 417 
+1 weevil detection(s) on | Mon Mar  8 11:39:51 2021 | confidence: 0.98 x= 717 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:39:51 2021 | confidence: 0.95 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:39:51 2021 | confidence: 0.91 x= 514 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:39:52 2021 | confidence: 0.98 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:39:52 2021 | confidence: 0.94 x= 517 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:39:53 2021 | confidence: 0.91 x= 514 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:39:53 2021 | confidence: 0.98 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:39:54 2021 | confidence: 0.94 x= 517 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:39:54 2021 | confidence: 0.92 x= 514 y=1842 
+1 weevil detection(s) on | Mon Mar  8 11:39:55 2021 | confidence: 0.98 x= 716 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:39:55 2021 | confidence: 0.93 x= 517 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:39:55 2021 | confidence: 0.93 x= 515 y=1843 
+1 weevil detection(s) on | Mon Mar  8 11:39:56 2021 | confidence: 0.98 x= 718 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:39:56 2021 | confidence: 0.95 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:39:57 2021 | confidence: 0.98 x= 717 y= 419 
+1 weevil detection(s) on | Mon Mar  8 11:39:57 2021 | confidence: 0.95 x= 516 y=1293 
+1 weevil detection(s) on | Mon Mar  8 11:39:57 2021 | confidence: 0.93 x= 514 y=1843 
