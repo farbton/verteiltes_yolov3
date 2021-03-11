@@ -19,7 +19,12 @@ class Window(QtWidgets.QMainWindow):
         super(Window, self).__init__()       
         uic.loadUi("guiNew.ui", self)
         self.console.setFont(QFont('Times', 9))
-        self.labelWeights.setFont(QFont('Times', 9))
+        self.labelWeights.setFont(QFont('Times', 8))
+        self.labelCfg.setFont(QFont('Times', 8))
+        self.labelData.setFont(QFont('Times', 8))
+        self.labelWeightsName.setFont(QFont('Times', 8))
+        self.labelCfgName.setFont(QFont('Times', 8))
+        self.labelDataName.setFont(QFont('Times', 8))
         self.setWindowTitle("YOLO-Viewer")
         #icon = QIcon()
         #icon.addFile("icons/favicon-16x16.png", QtCore.QSize(16,16))
@@ -56,8 +61,20 @@ class Window(QtWidgets.QMainWindow):
         vnString = ".avi: " + str(self.videoFileName.rpartition("/")[2]) + "\n" + "\n"
         self.console.setText(self.console.text() + vnString)
 
+        #logoPicName = "C:\Insektenlaser\GIT\verteiltes_yolov3\verteiltes_yolov3\icons\favicon-32x32.png"
+        #logoPic = QPixmap(logoPicName)
+        #scaledlogoPic = logoPic.scaled(QtCore.QSize(50, 50), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
+        #itemLogo = QtWidgets.QGraphicsPixmapItem(scaledlogoPic)
+        #sceneLogo = QtWidgets.QGraphicsScene(self)
+        #sceneLogo.addItem(itemLogo)
+        #self.graphicsViewLogo.setScene(sceneLogo)
+
+
         self.labelWeights.setText(str(self.weightsFileName.rpartition("/")[2]))
-       
+        self.labelCfg.setText(str(self.cfgFileName.rpartition("/")[2]))
+        self.labelData.setText(str(self.classesFileName.rpartition("/")[2]))
+        self.labelComport.setText("no COM-Port connected")
+
         self.lock = True
         self.mutexDislpay = QtCore.QMutex()
         self.mutexList = QtCore.QMutex()
@@ -99,6 +116,7 @@ class Window(QtWidgets.QMainWindow):
         self.cfgFileName = filename
         string = "cfgFile: " + str(filename.rpartition("/")[2]) + "\n"
         self.console.setText(self.console.text() + string)
+        self.labelCfg.setText(str(self.cfgFileName.rpartition("/")[2]))
         self.autoscroll()
 
     def loadDataFile(self):
@@ -119,8 +137,8 @@ class Window(QtWidgets.QMainWindow):
         if(self.imageName != ""):
             self.statusBar().showMessage("detection ...  ")
             self.console.setText(self.console.text() + "\nstart detection ...  \n")
-            self.autoscroll()
             self.loadImage()
+            self.autoscroll()
         else:
             self.console.setText(self.console.text() + "Bitte Image auswählen ...  \n")
             self.autoscroll()  
@@ -163,38 +181,40 @@ class Window(QtWidgets.QMainWindow):
 
     def loadImageName512(self):
         (filename, selectedFilter) = QtWidgets.QFileDialog.getOpenFileName(None, 'Select a image:', 'C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/images_512')
-        self.imageName = filename
-        self.detectedImage = cv2.imread(self.imageName)
-        aufloesung = self.detectedImage.shape
-        self.convertCv2ToQImage512()
-        self.qimageToPixmap()
-        self.resizePixmap()
-        self.pixmapSetScene()
-        self.addSceneToPlayer()
-        string = "loaded file: " + str(filename.rpartition("/")[2] + "\n")
-        self.console.setText(self.console.text() + string)
-        string = "solution: " + str(aufloesung) + "\n"
-        self.console.setText(self.console.text() + string)
-        self.autoscroll()
+        if filename:
+            self.imageName = filename
+            self.detectedImage = cv2.imread(self.imageName)
+            aufloesung = self.detectedImage.shape
+            self.convertCv2ToQImage512()
+            self.qimageToPixmap()
+            self.resizePixmap()
+            self.pixmapSetScene()
+            self.addSceneToPlayer()
+            string = "loaded file: " + str(filename.rpartition("/")[2] + "\n")
+            self.console.setText(self.console.text() + string)
+            string = "solution: " + str(aufloesung) + "\n"
+            self.console.setText(self.console.text() + string)
+            self.autoscroll()
 
     def loadImageName2048(self):
         (filename, selectedFilter) = QtWidgets.QFileDialog.getOpenFileName(None, 'Select a image:', 'C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/images')
-        self.imageName = filename
-        self.detectedImage = cv2.imread(self.imageName)
-        self.detectedImage = cv2.cvtColor(self.detectedImage, cv2.COLOR_BGR2RGB)
-        #cv2.imshow("test", self.detectedImage)
-        aufloesung = self.detectedImage.shape
-        #print(str(aufloesung))
-        self.convertCv2ToQImage(aufloesung)
-        self.qimageToPixmap()
-        self.resizePixmap()
-        self.pixmapSetScene()
-        self.addSceneToPlayer()
-        string = ".jpg: " + str(self.imageName.rpartition("/")[2] + "\n")
-        self.console.setText(self.console.text() + string)
-        string = "solution: " + str(aufloesung) + "\n"
-        self.console.setText(self.console.text() + string)
-        self.autoscroll()
+        if filename:
+            self.imageName = filename
+            self.detectedImage = cv2.imread(self.imageName)
+            self.detectedImage = cv2.cvtColor(self.detectedImage, cv2.COLOR_BGR2RGB)
+            #cv2.imshow("test", self.detectedImage)
+            aufloesung = self.detectedImage.shape
+            #print(str(aufloesung))
+            self.convertCv2ToQImage(aufloesung)
+            self.qimageToPixmap()
+            self.resizePixmap()
+            self.pixmapSetScene()
+            self.addSceneToPlayer()
+            string = ".jpg: " + str(self.imageName.rpartition("/")[2] + "\n")
+            self.console.setText(self.console.text() + string)
+            string = "solution: " + str(aufloesung) + "\n"
+            self.console.setText(self.console.text() + string)
+            self.autoscroll()
 
     def loadImage(self):       
         imageReaderSerial = ImageReaderSerial(self, self.cfgFileName, self.weightsFileName, self.classesFileName)

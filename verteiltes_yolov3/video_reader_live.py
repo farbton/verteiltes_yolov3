@@ -26,6 +26,7 @@ class VideoReaderLive(QtCore.QObject):
             self.ser.write(b'class quadrant confidence x y \n')
             sString = "COM-Port: " + self.ser.name + "\n"
             self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
+            self.mainWindow.labelComport.setText(str(self.ser.name) + "/" + str(self.ser.baudrate))
         except:
             sString = "no COM-Port avalible \n"
             self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
