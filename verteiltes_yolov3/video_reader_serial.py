@@ -186,7 +186,7 @@ class VideoReaderSerial(QtCore.QObject):
         self.mainWindow.autoscroll()
         framenumber = 1
         starttime = time.time()
-        while(cap.isOpened()):# and not self.mainWindow.pushButton_stop.isChecked()): # and self.counter <=1
+        while(cap.isOpened() and self.mainWindow.closeVariable==0):# and not self.mainWindow.pushButton_stop.isChecked()): # and self.counter <=1
             if framenumber % 5 == 0:
                 framenumber = 1
                 self.begin_time = time.time()

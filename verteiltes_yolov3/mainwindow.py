@@ -26,6 +26,7 @@ class Window(QtWidgets.QMainWindow):
         self.labelCfgName.setFont(QFont('Times', 8))
         self.labelDataName.setFont(QFont('Times', 8))
         self.setWindowTitle("YOLO-Viewer")
+        self.closeVariable = 0
         #icon = QIcon()
         #icon.addFile("icons/favicon-16x16.png", QtCore.QSize(16,16))
         #icon.addFile("icons/favicon-32x32.png", QtCore.QSize(32,32))
@@ -87,6 +88,9 @@ class Window(QtWidgets.QMainWindow):
         #self.signals.output_signal.connect(self.display)
         #self.signals.signal_detectionList.connect(self.writeList)
         
+    def closeEvent(self, event):
+        self.closeVariable=1
+        #print(str(self.closeVariable))
 
     def start(self):        
         self.pushButton_clear.clicked.connect(self.refreshConsoleAndList)

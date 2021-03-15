@@ -322,7 +322,7 @@ class SisoBoard(QtCore.QObject):
         #m = np.ones((2, 2), np.uint64)
         #m = [0,0,0,0,0]
         #counter = 1
-        while(not self.mainWindow.pushButton_stop.isChecked()):
+        while(not self.mainWindow.pushButton_stop.isChecked() and self.mainWindow.closeVariable==0):
             #time_start = time.time()
             bufNr = siso.Fg_getImageEx(fg, siso.SEL_ACT_IMAGE, 0, camPort, 2, memHandle)
             ulp_buf = siso.Fg_getImagePtrEx(fg, bufNr, camPort, memHandle)
@@ -366,7 +366,7 @@ class SisoBoard(QtCore.QObject):
             siso.Fg_stopAcquire(fg, camPort)
             siso.Fg_FreeMemEx(fg, memHandle)
             siso.Fg_FreeGrabber(fg)
-            stopString = "Acquisition stoped" + "\n"
+            stopString = "Acquisition stoped" + "\n" +"\n"
             self.mainWindow.console.setText(self.mainWindow.console.text() + stopString)
             #print("Acquisition stoped")
             #self.autoscroll()

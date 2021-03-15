@@ -15,21 +15,22 @@ class ImageReaderSerial(QtCore.QObject):
         self.weightsFileName = weightsFileName
         self.classesFileName = classesFileName
         
-        try:
-            self.ser = serial.Serial('COM4', 115200)
-            print("self.ser: " , self.ser)
-            print("Serialname: " , self.ser.name)
-            time.sleep(2)
-            self.ser.write(b'cls quad conf x y \n')
-            self.ser.flush()
-            sString = "COM-Port: " + self.ser.name + "\n"
-            self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
-        except:
-            sString = "kein COM-Port verfügbar \n"
-            self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
+        #try:
+        #    self.ser = serial.Serial('COM4', 115200)
+        #    print("self.ser: " , self.ser)
+        #    print("Serialname: " , self.ser.name)
+        #    time.sleep(2)
+        #    self.ser.write(b'cls quad conf x y \n')
+        #    self.ser.flush()
+        #    sString = "COM-Port: " + self.ser.name + "\n"
+        #    self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
+        #except:
+        #    sString = "kein COM-Port verfügbar \n"
+        #    self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
 
         #strich = "========================================================\n"
-        #self.mainWindow.console.setText(self.mainWindow.console.text() + strich)
+        #self.mainWindow.console.setText(self.mainWindow.console.text() +
+        #strich)
 
         self.conf_threshhold = 0.9 
         self.nms_treshold = 0.5

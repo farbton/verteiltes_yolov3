@@ -238,7 +238,7 @@ class VideoReaderLive(QtCore.QObject):
         QtWidgets.QApplication.processEvents()
         self.end_time = time.time()
         dString = "detections: " + str(self.detections) + " time: " + str(round(self.processtime,3))  + " s \n"
-        self.mainWindow.console.setText(dString)
+        self.mainWindow.labelTimeOutput.setText(dString)
         self.autoscroll()
         #self.oneCycleList.append(self.end_time - self.begin_time)
         #print("ser_oneCycle: " + str(round(self.end_time - self.begin_time,3)) + " netTime: " + str(round(self.netTime,3)))
