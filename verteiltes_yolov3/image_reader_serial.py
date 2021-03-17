@@ -13,34 +13,31 @@ class ImageReaderSerial(QtCore.QObject):
         self.mainWindow = mainWindow
         self.cfgFileName = cfgFileName 
         self.weightsFileName = weightsFileName
-        self.classesFileName = classesFileName
-        
-        #try:
-        #    self.ser = serial.Serial('COM4', 115200)
-        #    print("self.ser: " , self.ser)
-        #    print("Serialname: " , self.ser.name)
-        #    time.sleep(2)
-        #    self.ser.write(b'cls quad conf x y \n')
-        #    self.ser.flush()
-        #    sString = "COM-Port: " + self.ser.name + "\n"
-        #    self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
-        #except:
-        #    sString = "kein COM-Port verfügbar \n"
-        #    self.mainWindow.console.setText(self.mainWindow.console.text() + sString)
+        self.classesFileName = classesFileName       
 
-        #strich = "========================================================\n"
-        #self.mainWindow.console.setText(self.mainWindow.console.text() +
-        #strich)
-
-        self.conf_threshhold = 0.9 
+       # self.conf_threshhold = 0.8
         self.nms_treshold = 0.5
         self.counter = 1
         self.netTime = 0
         self.netTimeList = []
         self.oneCycleList = []
+       
+        if self.mainWindow.lineEditConfidenceThreshold.text():
+            self.confChanged()
+        else:
+            self.conf_threshhold = 0.8
+            self.mainWindow.lineEditConfidenceThreshold.setText(str(self.conf_threshhold))
+
+        self.mainWindow.lineEditConfidenceThreshold.editingFinished.connect(self.confChanged)
+
         self.getClassesNames()
         self.readNet()
         self.setLayerNames()
+
+    def confChanged(self):
+        tempText = self.mainWindow.lineEditConfidenceThreshold.text()
+        tempText = tempText.replace(',','.')
+        self.conf_threshhold = float(tempText)
 
     def getClassesNames(self):        
         self.classes = None
@@ -55,8 +52,10 @@ class ImageReaderSerial(QtCore.QObject):
         self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
         self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
         end = time.time()
-        string = self.mainWindow.console.text() + "{:2f} s \n".format(end - start)
+        string = self.mainWindow.console.text() + "{:2f} s \n".format(end - start) + \
+            "confThreshold: " + str(self.conf_threshhold) + " \n"
         self.mainWindow.console.setText(string)
+        
 
     def setLayerNames(self):
         self.layerNames = self.net.getLayerNames()
@@ -101,7 +100,7 @@ class ImageReaderSerial(QtCore.QObject):
                 classid = np.argmax(scores)
                 confidence = scores[classid]
 
-                if confidence > 0.8:
+                if confidence > self.conf_threshhold:
                     box = detection[0:4] * np.array([self.tile.shape[0], self.tile.shape[1], self.tile.shape[0], self.tile.shape[1]])
                     centerX, centerY, bwidth, bheight = box.astype('int')
                 

@@ -18,15 +18,19 @@ class Window(QtWidgets.QMainWindow):
     def __init__(self):       
         super(Window, self).__init__()       
         uic.loadUi("guiNew.ui", self)
-        self.console.setFont(QFont('Times', 9))
-        self.labelWeights.setFont(QFont('Times', 8))
-        self.labelCfg.setFont(QFont('Times', 8))
-        self.labelData.setFont(QFont('Times', 8))
-        self.labelWeightsName.setFont(QFont('Times', 8))
-        self.labelCfgName.setFont(QFont('Times', 8))
-        self.labelDataName.setFont(QFont('Times', 8))
+        self.console.setFont(QFont('Times', 11))
+
+        self.labelWeights.setFont(QFont('Times', 11))
+        self.labelCfg.setFont(QFont('Times', 11))
+        self.labelData.setFont(QFont('Times', 11))
+        self.labelComport.setFont(QFont('Times', 11))
+        self.labelWeightsName.setFont(QFont('Times', 11))
+        self.labelCfgName.setFont(QFont('Times', 11))
+        self.labelDataName.setFont(QFont('Times', 11))
+        self.labelComportName.setFont(QFont('Times', 11))
         self.setWindowTitle("YOLO-Viewer")
         self.closeVariable = 0
+        self.showDetect = 0
         #icon = QIcon()
         #icon.addFile("icons/favicon-16x16.png", QtCore.QSize(16,16))
         #icon.addFile("icons/favicon-32x32.png", QtCore.QSize(32,32))
@@ -84,6 +88,8 @@ class Window(QtWidgets.QMainWindow):
         #self.scrollArea.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
 
         # TODO alle wichtigen versionen ausgeben
+        # TODO detectierte Käfer ausschneiden zum Monitoring
+        # TODO confidence variable über gui änderbar machen
         #self.signals = WorkerSignals()
         #self.signals.output_signal.connect(self.display)
         #self.signals.signal_detectionList.connect(self.writeList)
@@ -96,16 +102,29 @@ class Window(QtWidgets.QMainWindow):
         self.pushButton_clear.clicked.connect(self.refreshConsoleAndList)
         self.pushButton_detectVideo.clicked.connect(self.loadVideoSerial)
         self.pushButton_detectImage.clicked.connect(self.startDetection)
-        self.pushButton_play.clicked.connect(self.loadVideoLive)
+        self.pushButton_detectLive.clicked.connect(self.detectVideoLive)
+        self.pushButton_stop.clicked.connect(self.stop)
         self.actionload_image.triggered.connect(self.loadImageName2048)
         self.actionload_image_512_pix.triggered.connect(self.loadImageName512)
         self.actionload_video_parallel.triggered.connect(self.loadVideoParallel)
         self.actionload_video_serial.triggered.connect(self.loadVideoFile)
-        self.actionload_HXC40.triggered.connect(self.loadVideoLive)
+        self.actionload_HXC40.triggered.connect(self.showHXC40Live)
         self.actionload_cfg.triggered.connect(self.loadCfgFile)
         self.actionload_weights.triggered.connect(self.loadWeightsFile)
         self.actionload_data.triggered.connect(self.loadDataFile)
         self.actionload_video_info.triggered.connect(self.getVideoInfo)
+        self.actionload_detectionLog.triggered.connect(self.getDetectionLog)
+        self.actionload_monitorDir.triggered.connect(self.getMonitorDir)
+
+
+    def getDetectionLog(self):
+        os.startfile("detectionLog.txt")
+
+    def getMonitorDir(self):
+        os.startfile("C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/monitorImages/")
+
+    def stop(self):
+        self.enableButtons()
 
     def loadWeightsFile(self):
         (filename, selectedFilter) = QtWidgets.QFileDialog.getOpenFileName(None, 'Select a .weights:', 'C:/Insektenlaser/GIT/verteiltes_yolov3/verteiltes_yolov3/yolo', "*.weights")
@@ -128,6 +147,7 @@ class Window(QtWidgets.QMainWindow):
         self.classesFileName = filename
         string = "dataFile: " + str(filename.rpartition("/")[2]) + "\n"
         self.console.setText(self.console.text() + string)
+        self.labelData.setText(str(self.classesFileName.rpartition("/")[2]))
         self.autoscroll()
 
     def loadVideoFile(self):
@@ -206,9 +226,7 @@ class Window(QtWidgets.QMainWindow):
             self.imageName = filename
             self.detectedImage = cv2.imread(self.imageName)
             self.detectedImage = cv2.cvtColor(self.detectedImage, cv2.COLOR_BGR2RGB)
-            #cv2.imshow("test", self.detectedImage)
             aufloesung = self.detectedImage.shape
-            #print(str(aufloesung))
             self.convertCv2ToQImage(aufloesung)
             self.qimageToPixmap()
             self.resizePixmap()
@@ -257,18 +275,37 @@ class Window(QtWidgets.QMainWindow):
         self.statusBar().clearMessage()    
 
     def loadVideoSerial(self):
+        self.disableButtons()
         videoReaderSerial = VideoReaderSerial(self, self.weightsFileName, self.cfgFileName, self.classesFileName)
         self.statusBar().showMessage("play video ...")
         videoReaderSerial.getVideo(self.videoFileName)
         self.statusBar().clearMessage()
 
-    def loadVideoLive(self):
+    def detectVideoLive(self):
+        self.disableButtons()
         self.pushButton_stop.setChecked(False)
+        self.showDetect = 1
         videoReaderLive = VideoReaderLive(self, self.weightsFileName, self.cfgFileName, self.classesFileName)
-        #print(str())
-        #self.statusBar().showMessage("play video ...")
-        #videoReaderLive.getVideo()
-        #self.statusBar().clearMessage()
+
+    def showHXC40Live(self):
+        self.disableButtons()
+        self.pushButton_stop.setChecked(False)
+        self.showDetect = 0
+        videoReaderLive = VideoReaderLive(self, self.weightsFileName, self.cfgFileName, self.classesFileName)
+     
+    def disableButtons(self):
+        self.pushButton_detectVideo.setEnabled(False)
+        self.pushButton_detectLive.setEnabled(False)
+        self.pushButton_detectImage.setEnabled(False)
+        self.lineEditConfidenceThreshold.setEnabled(False)
+        QtWidgets.QApplication.processEvents()
+
+    def enableButtons(self):
+        self.pushButton_detectVideo.setEnabled(True)
+        self.pushButton_detectLive.setEnabled(True)
+        self.pushButton_detectImage.setEnabled(True)
+        self.lineEditConfidenceThreshold.setEnabled(True)
+        QtWidgets.QApplication.processEvents()
 
     def autoscroll(self):
         self.scrollArea.verticalScrollBar().setValue(self.scrollArea.verticalScrollBar().maximum())
@@ -276,36 +313,10 @@ class Window(QtWidgets.QMainWindow):
         
     def resizeEvent(self, event):
         if self.lock == False:
-            #print("Event")
             self.setPlayerHeightWidth()
-            #self.qimageToPixmap()
-            #pixmap = self.player.items()
-            #pixmap = pixmap[0].pixmap()
-            #print(pixmap)
             self.resizePixmap()
             self.pixmapSetScene()
             self.addSceneToPlayer()
-
-    #@QtCore.pyqtSlot(QImage)
-    #def display(self, qimage):
-    #    #self.mutexDislpay.lock()
-    #    print("Mainwindow.display(): ")
-    #    height = self.player.geometry().height()
-    #    width = self.player.geometry().width()
-    #    #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    #    #frameImage = QImage(frame.data, frame.shape[1], frame.shape[0],
-    #    #QImage.Format_RGB888)
-    #    pixMap = QPixmap.fromImage(qimage)
-    #    pixMap = pixMap.scaled(QtCore.QSize(height, width),
-    #    QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
-    #    scene = QtWidgets.QGraphicsScene()
-    #    scene.addPixmap(pixMap) # return pixmapitem
-    #    self.player.setScene(scene)
-    #    #end = time.time()
-    #    #print(end-start)
-    #    #self.mainWindow.console.clear()
-    #    QtWidgets.QApplication.processEvents()
-    #    #self.mutexDislpay.unlock()
 
     def getVideoInfo(self):
         cap = cv2.VideoCapture(self.videoFileName)

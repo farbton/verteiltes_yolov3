@@ -309,6 +309,8 @@ class SisoBoard(QtCore.QObject):
         #print("Acquisition started")
         acString = "Acquisition started" + "\n"
         self.mainWindow.console.setText(self.mainWindow.console.text() + acString)
+        #self.mainWindow.autoscroll()
+        #QtWidgets.QApplication.processEvents()
 
         err = siso.Fg_AcquireEx(fg, camPort, -1, siso.ACQ_BLOCK, memHandle)
         if (err != 0):
