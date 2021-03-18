@@ -31,14 +31,14 @@ class Window(QtWidgets.QMainWindow):
         self.setWindowTitle("YOLO-Viewer")
         self.closeVariable = 0
         self.showDetect = 0
-        #icon = QIcon()
-        #icon.addFile("icons/favicon-16x16.png", QtCore.QSize(16,16))
-        #icon.addFile("icons/favicon-32x32.png", QtCore.QSize(32,32))
-        #icon.addFile("icons/favicon-48x48.png", QtCore.QSize(48,48))
-        #icon.addFile("icons/favicon-192x192.png", QtCore.QSize(192,192))
-        #icon.addFile("icons/favicon-512x512.png", QtCore.QSize(512,512))
-        #icon.addFile("icons/icon.png", QtCore.QSize(512,512))
-        #self.setWindowIcon(icon)
+        icon = QIcon()
+        icon.addFile("icons/favicon-16x16.png", QtCore.QSize(16,16))
+        icon.addFile("icons/favicon-32x32.png", QtCore.QSize(32,32))
+        icon.addFile("icons/favicon-48x48.png", QtCore.QSize(48,48))
+        icon.addFile("icons/favicon-192x192.png", QtCore.QSize(192,192))
+        icon.addFile("icons/favicon-512x512.png", QtCore.QSize(512,512))
+        icon.addFile("icons/icon.png", QtCore.QSize(512,512))
+        self.setWindowIcon(icon)
         
         pString = "Python-Version: " + str(platform.python_version() + "\n")
         self.console.setText(self.console.text() + pString)
