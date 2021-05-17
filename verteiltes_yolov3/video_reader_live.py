@@ -155,7 +155,7 @@ class VideoReaderLive(QtCore.QObject):
             for i in self.idxs.flatten():
                 x, y = self.boxes[i][0], self.boxes[i][1]
                 w, h = self.boxes[i][2], self.boxes[i][3]
-                global_x, global_y = functions.getGlobalCoordinates(self.modCounter, x, y)
+                global_x, global_y = functions.getGlobalCoordinates(self.modCounter, y, x)
                 string = ("{:3.2f}, {:4d}, {:4d}".format(self.confidences[i], global_x, global_y))
              
                 serString = str(global_x).encode('utf-8') + str(' ').encode('utf-8') + \
@@ -211,14 +211,21 @@ class VideoReaderLive(QtCore.QObject):
         
     def showImage(self, ndarray):
         self.frame = ndarray
-        height = self.mainWindow.player.geometry().height()
         width = self.mainWindow.player.geometry().width()
+        #self.mainWindow.player.resize(width, width)
+        #self.mainWindow.listWidget.resize(width, width)
+        #self.mainWindow.console.resize(width, width)
+        height = self.mainWindow.player.geometry().height()
         self.frame = QImage(self.frame, 2048, 2048, QImage.Format_Grayscale8)
         pixMap = QPixmap.fromImage(self.frame)
         pixMap = pixMap.scaled(QtCore.QSize(height, width), QtCore.Qt.KeepAspectRatio, QtCore.Qt.FastTransformation)
         scene = QtWidgets.QGraphicsScene()
         scene.addPixmap(pixMap) # return pixmapitem
-        self.mainWindow.player.setScene(scene)
+        self.mainWindow.player.setScene(scene)  
+        if self.mainWindow.pushButton_saveImage.isChecked():
+            stringName = "IZMImages/test_" + str(time.time()) + ".jpg"
+            cv2.imwrite(stringName, ndarray)
+            self.mainWindow.pushButton_saveImage.setChecked(False)
         self.autoscroll()
         QtWidgets.QApplication.processEvents()
 
@@ -231,6 +238,7 @@ class VideoReaderLive(QtCore.QObject):
         scene = QtWidgets.QGraphicsScene()
         scene.addPixmap(pixMap) # return pixmapitem
         self.mainWindow.player.setScene(scene)
+        self.mainWindow.player.setMouseTracking(True)
         QtWidgets.QApplication.processEvents()
         self.end_time = time.time()
         dString = "detections: " + str(self.detections) + " time: " + str(round(self.processtime,3)) + " s"

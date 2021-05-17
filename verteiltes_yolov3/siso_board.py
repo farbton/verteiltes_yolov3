@@ -346,6 +346,7 @@ class SisoBoard(QtCore.QObject):
             #print(mat / 255)
             #print(m.shape)
             #qimage = QImage(m, 2048, 2048, QImage.Format_Grayscale8)
+            
             self.signals.live_image.emit(nparray)
             #self.yieldCurrentThread()
             #print("emit_arrray")

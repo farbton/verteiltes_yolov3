@@ -4,7 +4,7 @@ import os
 import platform
 import time
 from PyQt5 import QtCore, QtWidgets, uic
-from PyQt5.QtGui import QPixmap, QImage, QFont, QIcon
+from PyQt5.QtGui import QPixmap, QImage, QFont, QIcon, QMouseEvent
 
 
 #from video_reader_parallel import ReaderParallel
@@ -19,6 +19,13 @@ class Window(QtWidgets.QMainWindow):
         super(Window, self).__init__()       
         uic.loadUi("guiNew.ui", self)
         self.console.setFont(QFont('Times', 11))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(True)
+        self.player.setSizePolicy(sizePolicy)
+        print(self.player.sizePolicy().hasHeightForWidth())
+        print(self.player.geometry())
 
         self.labelWeights.setFont(QFont('Times', 11))
         self.labelCfg.setFont(QFont('Times', 11))
@@ -31,6 +38,8 @@ class Window(QtWidgets.QMainWindow):
         self.setWindowTitle("YOLO-Viewer")
         self.closeVariable = 0
         self.showDetect = 0
+        self.pixMap= None
+
         icon = QIcon()
         icon.addFile("icons/favicon-16x16.png", QtCore.QSize(16,16))
         icon.addFile("icons/favicon-32x32.png", QtCore.QSize(32,32))
@@ -73,7 +82,7 @@ class Window(QtWidgets.QMainWindow):
         #sceneLogo = QtWidgets.QGraphicsScene(self)
         #sceneLogo.addItem(itemLogo)
         #self.graphicsViewLogo.setScene(sceneLogo)
-
+        self.player.setMouseTracking(True)
 
         self.labelWeights.setText(str(self.weightsFileName.rpartition("/")[2]))
         self.labelCfg.setText(str(self.cfgFileName.rpartition("/")[2]))
@@ -90,6 +99,8 @@ class Window(QtWidgets.QMainWindow):
         # TODO alle wichtigen versionen ausgeben
         # TODO detectierte Käfer ausschneiden zum Monitoring
         # TODO confidence variable über gui änderbar machen
+        # SubframeGrid über Bild legen ein- und ausschlatbar über chackbox
+
         #self.signals = WorkerSignals()
         #self.signals.output_signal.connect(self.display)
         #self.signals.signal_detectionList.connect(self.writeList)
@@ -104,6 +115,7 @@ class Window(QtWidgets.QMainWindow):
         self.pushButton_detectImage.clicked.connect(self.startDetection)
         self.pushButton_detectLive.clicked.connect(self.detectVideoLive)
         self.pushButton_stop.clicked.connect(self.stop)
+        self.pushButton_saveImage.clicked.connect(self.saveImage)
         self.actionload_image.triggered.connect(self.loadImageName2048)
         self.actionload_image_512_pix.triggered.connect(self.loadImageName512)
         self.actionload_video_parallel.triggered.connect(self.loadVideoParallel)
@@ -116,6 +128,9 @@ class Window(QtWidgets.QMainWindow):
         self.actionload_detectionLog.triggered.connect(self.getDetectionLog)
         self.actionload_monitorDir.triggered.connect(self.getMonitorDir)
 
+    def saveImage(self):
+        #print("save")
+        pass
 
     def getDetectionLog(self):
         os.startfile("detectionLog.txt")
@@ -179,8 +194,10 @@ class Window(QtWidgets.QMainWindow):
         #self.mutexList.unlock()
     
     def setPlayerHeightWidth(self):
-        self.playerHeight = self.player.geometry().height()
+       # geo = self.player.geometry()
+        #print(geo)
         self.playerWidth = self.player.geometry().width()
+        self.playerHeight = self.player.geometry().height()
 
     def convertCv2ToQImage(self, aufloesung):       
         self.qimage = QImage(self.detectedImage, aufloesung[0], aufloesung[1], QImage.Format_RGB888)
@@ -312,11 +329,42 @@ class Window(QtWidgets.QMainWindow):
         QtWidgets.QApplication.processEvents()
         
     def resizeEvent(self, event):
-        if self.lock == False:
+        #if self.lock == False:
+        if self.pixMap is not None:
+            #print("resizeEvent")
             self.setPlayerHeightWidth()
             self.resizePixmap()
             self.pixmapSetScene()
             self.addSceneToPlayer()
+
+    def mousePressEvent(self, event):
+        height = self.player.geometry().height()
+        width = self.player.geometry().width()
+        #diff = (height-width)/2
+        #print(str(diff))
+        #print(height, width, self.player.frameSize())
+        pos = event.pos()
+        #print("MainWindowCoordinateMausKlick: " + str(event.pos()))
+        #print("GlobalCoordinateWidget: " + str(self.player.pos()))
+        #print("mapFromGlobal: " + str(self.player.mapFromGlobal(QtCore.QPoint(event.pos()))))
+        globalCoordinate = self.player.mapToGlobal(QtCore.QPoint(event.pos()))
+        localCoordinate = self.player.mapFromGlobal(globalCoordinate)
+        mapPoints = self.player.mapTo(self.player,QtCore.QPoint(event.pos()))
+        #print("mapToGlobal: " + str(globalCoordinate))
+        #print("mapFromGlobal: " + str(localCoordinate))
+        #print("mapPoints: " + str(mapPoints))
+        #print("y: " + str(event.pos().y()))
+        #print(self.player.frameGeometry())
+        #print(str(event.type()))
+        #if event.type() == QMouseEvent:
+       # print(str(pos))
+        #sp = self.player.mapToScene(pos)
+        #lp = self.scaledPixMap.mapFromScene(sp).toPoint()
+       # print(str(sp))
+        tempX = round((round(2048 / width,2)) * (pos.x()-5),0)
+        tempY =round(round(2048/height,2) * (pos.y()-230),0)
+        self.labelKoordinaten.setText("x: %d, y: %d" % (tempY, tempX))
+        #print(tempX)
 
     def getVideoInfo(self):
         cap = cv2.VideoCapture(self.videoFileName)
